@@ -1,0 +1,898 @@
+{
+	"info": {
+		"_postman_id": "dfd6a3d8-711d-4497-8435-c850e7527dd5",
+		"name": "APIGEE Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25769485"
+	},
+	"item": [
+		{
+			"name": "Developer APPs",
+			"item": [
+				{
+					"name": "Get all apps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/apps",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get APP by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/apps/{{appID}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"apps",
+								"{{appID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by name and developer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/developers/{{mailDeveloper}}/apss/{{appName}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"developers",
+								"{{mailDeveloper}}",
+								"apss",
+								"{{appName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all apps by developer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/developers/{{developerMail}}/apss",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"developers",
+								"{{developerMail}}",
+								"apss"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create keys",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"consumerKey\":\"\",\r\n    \"consumerSecret\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/developers/{{mailDeveloper}}/apss/{{appName}}/keys/create",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"developers",
+								"{{mailDeveloper}}",
+								"apss",
+								"{{appName}}",
+								"keys",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Proxies",
+			"item": [
+				{
+					"name": "Get all proxies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/applications",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get proxy revisions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/applications/{{proxyName}}/revisions",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"applications",
+								"{{proxyName}}",
+								"revisions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get proxy details by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/applications/{{proxyName}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"applications",
+								"{{proxyName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get proxy revisions details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/applications/{{proxyName}}/revisions/{{revisionNumber}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"applications",
+								"{{proxyName}}",
+								"revisions",
+								"{{revisionNumber}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Get permissions by role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/userroles/{{role}}/permissions",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"userroles",
+								"{{role}}",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/apps/userroles",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"apps",
+								"userroles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users by role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/userroles/{{role}}/users",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"userroles",
+								"{{role}}",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add permission to role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"resourcePermission\":[\r\n        {\r\n            \"organization\": \"example\",\r\n            \"path\":\"PathExample/*\",\r\n            \"permissions\":[\r\n                \"get\",\r\n                \"put\",\r\n                \"delete\"\r\n            ]\r\n        },\r\n        {\r\n            \"organization\": \"example\",\r\n            \"path\":\"PathExample/*\",\r\n            \"permissions\":[\r\n                \"get\",\r\n                \"put\",\r\n                \"delete\"\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/userroles/{{role}}/resourcepermissions",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"userroles",
+								"{{role}}",
+								"resourcepermissions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/apiproducts",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"apiproducts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/apiproducts/{{productName}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"apiproducts",
+								"{{productName}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KVMs",
+			"item": [
+				{
+					"name": "Get all kvms from environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/keyvaluemaps",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"keyvaluemaps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get pairs from kvm",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keyvaluemaps/{{KVMname}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keyvaluemaps",
+								"{{KVMname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New KVM",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"encrypted\": false,\r\n    \"entry\": [\r\n        {\r\n            \"name\":\"TEST\",\r\n            \"value\": \"test\"\r\n        }\r\n    ],\r\n    \"name:\":\"KVM Name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keyvaluemaps",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keyvaluemaps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add or Modify key pair to KVMs",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"encrypted\": false,\r\n    \"entry\": [\r\n        {\r\n            \"name\":\"TEST\",\r\n            \"value\": \"test\"\r\n        }\r\n    ],\r\n    \"name:\":\"KVM Name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/enviroments/{{environment}}/Keyvaluemaps/{{KVMname}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"enviroments",
+								"{{environment}}",
+								"Keyvaluemaps",
+								"{{KVMname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete entire KVM",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keyvaluemaps/{{KVMname}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keyvaluemaps",
+								"{{KVMname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete KEY pair",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"encrypted\": false,\r\n    \"entry\":[\r\n        {\r\n            \"name\":\"PRUEBA\",\r\n            \"value\":\"valor\"\r\n        }\r\n    ],\r\n    \"name\":\"KVMname\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keyvaluemaps/{{KVMname}}/entries/{{KVMKey}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keyvaluemaps",
+								"{{KVMname}}",
+								"entries",
+								"{{KVMKey}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Developers",
+			"item": [
+				{
+					"name": "Get all developers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/developers",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"developers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get developer by Mail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/developers/{{mailDeveloper}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"developers",
+								"{{mailDeveloper}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Caches",
+			"item": [
+				{
+					"name": "Get caches by environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/caches",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"caches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get cache info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/caches/{{CacheName}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"caches",
+								"{{CacheName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get cachedlogs in cache",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/applications/{{proxyName}}/cachedlogs/categories",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"applications",
+								"{{proxyName}}",
+								"cachedlogs",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Virtualhosts",
+			"item": [
+				{
+					"name": "Get virtualhosts by environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/virtualhosts",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"virtualhosts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get users (fail)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/users",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SharedFlows",
+			"item": [
+				{
+					"name": "Get SF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/sharedflows",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"sharedflows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SF by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/sharedflows/{{SharedFlowName}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"sharedflows",
+								"{{SharedFlowName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SF Deployments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/sharedflows/{{SharedFlowName}}/deployments",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"sharedflows",
+								"{{SharedFlowName}}",
+								"deployments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SF Revisions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/sharedflows/{{SharedFlowName}}/revisions/{{revisionNumber}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"sharedflows",
+								"{{SharedFlowName}}",
+								"revisions",
+								"{{revisionNumber}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Keystores",
+			"item": [
+				{
+					"name": "Get certificate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keystore/{{KeyStore}}/certs/{{cert}}/export",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keystore",
+								"{{KeyStore}}",
+								"certs",
+								"{{cert}}",
+								"export"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Keystore",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keystores",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keystores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Keystore details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/environments/{{environment}}/keystore/{{KeyStore}}",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"environments",
+								"{{environment}}",
+								"keystore",
+								"{{KeyStore}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deployments",
+			"item": [
+				{
+					"name": "Get all deployments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlBase}}/deployments",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"deployments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "environment",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "appID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "role",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "appName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "KVMname",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "value",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "KVMKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "CacheName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "SharedFlowName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "revisionNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "proxyName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "KeyStore",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "cert",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "mailDeveloper",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
