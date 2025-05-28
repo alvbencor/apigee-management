@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: monospace; margin: 2rem auto; width: 80%; background-color: #3e5248; color: beige; }
+    h1, h2 { font-family: sans-serif; color: beige; }
+    .input-group { margin-bottom: 1rem; max-width: 40rem; }
+    .csr-container { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+    .csr-container .input-group { display: flex; flex-direction: row; max-width: 40rem; }
+    #csrType { max-width: 8rem; }
+    #dns { width: 17rem; }
+    #mode {max-width: 17rem;}
+    label { display: block; margin-bottom: 0.25rem; }
+    textarea, input, select, button { width: 100%; padding: 0.5rem; box-sizing: border-box; border: none; border-radius: 4px; font-family: monospace; margin-bottom: 0.5rem; }
+    textarea { resize: vertical; color: beige; background: #52675b; }
+    button { background-color: #afe2b1; color: #3c3f3f; cursor: pointer; max-width: 17rem; margin-bottom: 5rem; }
+    button:hover { opacity: 0.9; }
+    .copy-msg { color: aliceblue; }
+    .title{display: flex; flex-direction: row; align-items: center;}
+    .nt{font-family: monospace; font-size: .6rem; color: #afe2b170; margin-top: -2rem; max-width: 15rem;}
+
+.title >p{
+    color: #afe2b1;
+    margin-left: .7rem;
+}
+  </style>
+</head>
+<body>
+  <div class="title">
+    <h1>b64</h1>
+  <p>converter + pem</p>
+  </div>
+  <div class="input-group">
+    <select id="mode">
+      <option value="encode">Codificar Base64</option>
+      <option value="decode">Decodificar Base64</option>
+      <option value="csr">Decodificar CSR</option>
+      <option value="key">Tamaño Private Key</option>
+      <option value="userpass">Usuario:Password</option>
+    </select>
+  </div>
+  <div id="textGroup" class="input-group">
+    <textarea id="inputText" rows="6" placeholder="Introduce texto plano, Base64, CSR PEM o Private Key PEM"></textarea>
+  </div>
+  <div id="userGroup" class="input-group" style="display:none;">
+    <input type="text" id="username" placeholder="Usuario" />
+  </div>
+  <div id="passwordGroup" class="input-group" style="display:none;">
+    <input type="password" id="password" placeholder="Contraseña" />
+  </div>
+  <button id="convertBtn">Procesar</button>
+  <div id="resultGroup" class="input-group" style="display:none;">
+    <textarea id="result" rows="4" readonly placeholder="Click para copiar"></textarea>
+    <p id="copyMsg" class="copy-msg" style="display:none;">Copiado al portapapeles</p>
+  </div>
+
+  <div class="title">
+    <h1>CSR</h1>
+    <p>generator*</p>
+  </div>
+  </div>
+  <div class="csr-container">
+    <div class="input-group">
+      <select id="csrType">
+        <option value="public">Público</option>
+        <option value="private">Privado</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <input type="text" id="dns" placeholder="DNS (Common Name)" />
+    </div>
+  </div>
+  <button id="generateCsr">Descargar CSR + Private KEY (ZIP)</button>
+  <p class="nt">* Personalizar los valores en el codigo</p>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/node-forge@0.10.0/dist/forge.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Base64 y CSR functions
+      const modeSelect = document.getElementById('mode');
+      const textGroup = document.getElementById('textGroup');
+      const userGroup = document.getElementById('userGroup');
+      const passwordGroup = document.getElementById('passwordGroup');
+      const convertBtn = document.getElementById('convertBtn');
+      const inputText = document.getElementById('inputText');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const resultGroup = document.getElementById('resultGroup');
+      const resultText = document.getElementById('result');
+      const copyMsg = document.getElementById('copyMsg');
+
+      function encode(str) {
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        bytes.forEach(b => binary += String.fromCharCode(b));
+        return btoa(binary);
+      }
+
+      function decode(str) {
+        const binary = atob(str);
+        const bytes = new Uint8Array([...binary].map(ch => ch.charCodeAt(0)));
+        return new TextDecoder().decode(bytes);
+      }
+
+      function decodeCSR(pem) {
+        const csr = forge.pki.certificationRequestFromPem(pem);
+        const attrs = csr.subject.attributes.map(a => `${a.shortName}=${a.value}`);
+        return 'CSR Subject: ' + attrs.join(', ');
+      }
+
+      function decodeKey(pem) {
+        const key = forge.pki.privateKeyFromPem(pem);
+        return key.n && key.e ? `RSA Private Key - Modulus bits: ${key.n.bitLength()}, Exponent: ${key.e.toString()}` : 'Clave parseada';
+      }
+
+      function processInput() {
+        const mode = modeSelect.value;
+        let output;
+        try {
+          if (mode === 'encode') output = encode(inputText.value.trim());
+          else if (mode === 'decode') output = decode(inputText.value.trim());
+          else if (mode === 'csr') output = decodeCSR(inputText.value.trim());
+          else if (mode === 'key') output = decodeKey(inputText.value.trim());
+          else if (mode === 'userpass') output = encode(`${usernameInput.value}:${passwordInput.value}`);
+        } catch (e) {
+          output = 'Error: ' + e.message;
+        }
+        resultText.value = output;
+        resultGroup.style.display = 'block';
+        copyMsg.style.display = 'none';
+      }
+
+      modeSelect.addEventListener('change', () => {
+        resultGroup.style.display = 'none';
+        copyMsg.style.display = 'none';
+        if (modeSelect.value === 'userpass') {
+          textGroup.style.display = 'none';
+          userGroup.style.display = 'block';
+          passwordGroup.style.display = 'block';
+        } else {
+          textGroup.style.display = 'block';
+          userGroup.style.display = 'none';
+          passwordGroup.style.display = 'none';
+        }
+      });
+
+      convertBtn.addEventListener('click', processInput);
+      [inputText, usernameInput, passwordInput].forEach(el => el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); processInput(); }
+      }));
+
+      resultText.addEventListener('click', () => {
+        if (!resultText.value) return;
+        resultText.select();
+        navigator.clipboard.writeText(resultText.value)
+          .then(() => { copyMsg.style.display = 'block'; setTimeout(() => copyMsg.style.display = 'none', 2000); });
+      });
+
+      // Generar CSR + ZIP
+      document.getElementById('generateCsr').addEventListener('click', () => {
+        const type = document.getElementById('csrType').value;
+        const dns = document.getElementById('dns').value.trim();
+        if (!dns) { alert('Introduce la DNS para el Common Name.'); return; }
+        const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048, e: 0x10001 });
+        const csr = forge.pki.createCertificationRequest(); csr.publicKey = keypair.publicKey;
+        csr.setSubject([
+          { name: 'commonName', value: dns },
+          { name: 'organizationalUnitName', value: 'Organizacion' },
+          { name: 'organizationName', value: type === 'public' ? 'firmaPublica' : 'firmaInterna' },
+          { name: 'localityName', value: 'Ciudad' },
+          { name: 'stateOrProvinceName', value: 'Provincia' },
+          { name: 'countryName', value: 'SP' },
+          { name: 'emailAddress', value: 'mail@ejemplo.es'}
+        ]);
+        csr.setAttributes([{ name: 'extensionRequest', extensions: [{ name: 'subjectAltName', altNames: [{ type: 2, value: dns }] }] }]);
+        csr.sign(keypair.privateKey, forge.md.sha256.create());
+        const pemCsr = forge.pki.certificationRequestToPem(csr);
+        const pemKey = forge.pki.privateKeyToPem(keypair.privateKey);
+
+        const zip = new JSZip();
+        zip.file(dns + '.csr', pemCsr);
+        zip.file(dns + '.key', pemKey);
+        zip.generateAsync({ type: 'blob' }).then(content => {
+          const url = URL.createObjectURL(content);
+          const a = document.createElement('a'); a.href = url; a.download = dns + '.zip'; document.body.appendChild(a);
+          a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
