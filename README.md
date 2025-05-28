@@ -31,10 +31,10 @@ El resultado se vuelca en un archivo **CSV** (`inventario_apigee_YYYYMMDD_HHmmss
 
 1. Clona este repositorio o descarga el script:
    ```powershell
-   git clone https://github.com/tu-org/apigee-inventory-powershell.git
-   cd apigee-inventory-powershell
+   git clone https://github.com/tu-org/apigee-management.git
+   cd apigee-management
    ```
-2. Edita la parte superior de `apigee-inventory.ps1` y configura:
+2. Edita la parte superior de `apigee-proxy-inventory.ps1` y configura:
    ```powershell
    # URL base de tu organización Apigee
    $APIGEE_URL = 'https://api.enterprise.apigee.com/v1/organizations/tu-org'
