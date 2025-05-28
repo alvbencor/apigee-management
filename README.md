@@ -4,7 +4,7 @@ Este repositorio contiene un script en **PowerShell** para generar un inventario
 
 ## Descripción
 
-`apigee-inventory.ps1` automatiza el mapeo de:
+`apigee-proxy-inventory.ps1` automatiza el mapeo de:
 
 1. **Developers** y sus **Apps**.
 2. **API Products** vinculados a cada App.
