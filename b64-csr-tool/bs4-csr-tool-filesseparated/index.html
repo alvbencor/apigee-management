@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style.css">
+  <title>b64 Converter + CSR Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/node-forge@0.10.0/dist/forge.min.js" async></script>
+  <script src="./script.js" async></script>
+</head>
+<body>
+  <div class="title">
+    <h1>b64</h1>
+    <p>converter + pem</p>
+  </div>
+  <div class="input-group">
+    <select id="mode">
+      <option value="encode">Codificar Base64</option>
+      <option value="decode">Decodificar Base64</option>
+      <option value="csr">Decodificar CSR</option>
+      <option value="key">Tamaño Private Key</option>
+      <option value="userpass">Usuario:Password</option>
+    </select>
+  </div>
+  <div id="textGroup" class="input-group">
+    <textarea id="inputText" rows="6" placeholder="Introduce texto plano, Base64, CSR PEM o Private Key PEM"></textarea>
+  </div>
+  <div id="userGroup" class="input-group" style="display:none;">
+    <input type="text" id="username" placeholder="Usuario" />
+  </div>
+  <div id="passwordGroup" class="input-group" style="display:none;">
+    <input type="password" id="password" placeholder="Contraseña" />
+  </div>
+  <button id="convertBtn">Procesar</button>
+  <div id="resultGroup" class="input-group" style="display:none;">
+    <textarea id="result" rows="4" readonly placeholder="Click para copiar"></textarea>
+    <p id="copyMsg" class="copy-msg" style="display:none;">Copiado al portapapeles</p>
+  </div>
+
+  <div class="title">
+    <h1>CSR</h1>
+    <p>generator*</p>
+  </div>
+  <div class="csr-container">
+    <div class="input-group">
+      <select id="csrType">
+        <option value="public">Público</option>
+        <option value="private">Privado</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <input type="text" id="dns" placeholder="DNS (Common Name)" />
+    </div>
+  </div>
+  <button id="generateCsr">Descargar CSR + Private KEY (ZIP)</button>
+  <p class="nt">* Personalizar los valores en el código</p>
+
+  
+</body>
+</html>
