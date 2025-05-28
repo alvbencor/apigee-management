@@ -1,4 +1,4 @@
-![Preview](https://github.com/alvbencor/apigee-management/b64-csr-tool/img/b64-csr-tool.png)
+![Preview](https://github.com/alvbencor/apigee-management/blob/main/b64-csr-tool/img/b64-csr-tool.png)
 # b64 Converter + CSR Generator
 
 Esta herramienta es una aplicación web ligera en una sola pagina que ofrece las siguientes funcionalidades:
