@@ -14,9 +14,7 @@
     .input-group { margin: 1rem 0; }
     .input-group input { width: 100%; max-width: 30rem; padding: 0.5rem; border: none; border-radius: 4px; background: #52675b; color: beige; }
     .filter-toggle { margin: 1rem 0; }
-    .filter-toggle button { padding: 0.5rem 1rem; border: none; border-radius: 4px; background: #52675b; color: beige; cursor: pointer; }
     .filter-options { margin: 1rem 0; }
-    .filter-options label { margin-right: 1rem; display: inline-block; }
     .actions { margin: 3rem 0; }
     .actions button { padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; border-radius: 4px; cursor: pointer; }
     .copy-btn { background: #afe2b1; color: #3c3f3f; }
@@ -30,7 +28,7 @@
 </head>
 <body>
   <h1>Inventario de APIs</h1>
-  <div id="stats"><!-- stats will show for standard CSV --></div>
+  <div id="stats"></div>
 
   <div class="dropzone" id="dropzone">Arrastra tu CSV<br>o haz clic aquí</div>
   <div class="loaded-message" id="loadedMessage">✓ Archivo cargado: <span id="loadedName"></span></div>
@@ -39,94 +37,66 @@
   <div class="input-group" id="searchGroup"><input id="search" type="text" placeholder="Escribe para filtrar..." /></div>
   <div class="filter-toggle" id="filterToggle"><button id="btnToggleFilters">Mostrar filtros</button></div>
   <div class="filter-options" id="filterOptions">
-    <!-- standard filters -->
+    <label><input type="checkbox" id="chkApp" checked /> Apps</label>
+    <label><input type="checkbox" id="chkDev" checked /> Developers</label>
+    <label><input type="checkbox" id="chkProd" checked /> Productos</label>
+    <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
+    <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
+    <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
+    <br />
+    <label><input type="checkbox" id="chkProdSinApp" /> Sólo productos sin app</label>
+    <label><input type="checkbox" id="chkProxySinProd" /> Sólo proxies sin producto</label>
   </div>
+
   <div class="actions" id="actionsGroup">
     <button class="copy-btn" id="copyBtn">Copiar tabla</button>
     <button class="export-btn" id="exportBtn">Exportar a CSV</button>
   </div>
-
   <div id="resultCount">Total resultados: <span id="countNumber">0</span></div>
 
   <table id="inventoryTable"><thead><tr id="headerRow"></tr></thead><tbody></tbody></table>
 
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    let data = [], filtered = [], isDefaultReport = false;
-    const fileInput = document.getElementById('fileInput'), dropzone = document.getElementById('dropzone'),
-          loadedMessage = document.getElementById('loadedMessage'), loadedName = document.getElementById('loadedName'),
-          statsDiv = document.getElementById('stats'), searchGroup = document.getElementById('searchGroup'),
-          filterToggle = document.getElementById('filterToggle'), filterOptions = document.getElementById('filterOptions'),
-          actionsGroup = document.getElementById('actionsGroup'), copyBtn = document.getElementById('copyBtn'),
-          exportBtn = document.getElementById('exportBtn'), resultCountDiv = document.getElementById('resultCount'),
-          countNumber = document.getElementById('countNumber'), table = document.getElementById('inventoryTable'),
-          headerRow = document.getElementById('headerRow'), btnToggleFilters = document.getElementById('btnToggleFilters');
+    let data=[],filtered=[],isDefault=false;
+    const dropzone=document.getElementById('dropzone'),fileInput=document.getElementById('fileInput'),
+          loadedMessage=document.getElementById('loadedMessage'),loadedName=document.getElementById('loadedName'),
+          statsDiv=document.getElementById('stats'),searchGroup=document.getElementById('searchGroup'),
+          filterToggle=document.getElementById('filterToggle'),filterOptions=document.getElementById('filterOptions'),
+          actionsGroup=document.getElementById('actionsGroup'),copyBtn=document.getElementById('copyBtn'),
+          exportBtn=document.getElementById('exportBtn'),resultCountDiv=document.getElementById('resultCount'),
+          countNumber=document.getElementById('countNumber'),table=document.getElementById('inventoryTable'),
+          headerRow=document.getElementById('headerRow'),btnToggleFilters=document.getElementById('btnToggleFilters');
 
-    function setupHeader(columns) {
-      headerRow.innerHTML = '';
-      columns.forEach(col => {
-        const th = document.createElement('th'); th.textContent = col; headerRow.appendChild(th);
-      });
+    function setupHeader(cols){ headerRow.innerHTML=''; cols.forEach(c=>{const th=document.createElement('th');th.textContent=c;headerRow.appendChild(th);}); }
+
+    ['dragenter','dragover'].forEach(e=>dropzone.addEventListener(e,ev=>{ev.preventDefault();dropzone.classList.add('hover');}));
+    ['dragleave','drop'].forEach(e=>dropzone.addEventListener(e,ev=>{ev.preventDefault();dropzone.classList.remove('hover');}));
+    dropzone.addEventListener('drop',e=>{handleFile(e.dataTransfer.files[0]);});
+    dropzone.addEventListener('click',()=>fileInput.click());
+    fileInput.addEventListener('change',()=>handleFile(fileInput.files[0]));
+
+    btnToggleFilters.addEventListener('click',()=>{const vis=filterOptions.style.display==='block';filterOptions.style.display=vis?'none':'block';btnToggleFilters.textContent=vis?'Mostrar filtros':'Ocultar filtros';});
+
+    function handleFile(file){if(!file)return;dropzone.style.display='none';loadedName.textContent=file.name;loadedMessage.style.display='block';
+      isDefault=file.name.includes('-default');
+      // show UI
+      [searchGroup,filterToggle,actionsGroup,table,resultCountDiv].forEach(el=>el.style.display='block');
+      if(isDefault){statsDiv.style.display='none';filterToggle.style.display='none';setupHeader(['Producto','Apps','Proxies','Descartable','Razón']);}
+      else{statsDiv.style.display='block';filterToggle.style.display='block';setupHeader(['App','Developer','Producto','Proxy','KVM','Target']);}
+      Papa.parse(file,{header:true,delimiter:';',skipEmptyLines:true,complete:res=>{data=res.data;initialize();}});
     }
 
-    function handleFile(file) {
-      if (!file) return;
-      loadedName.textContent = file.name; loadedMessage.style.display = 'block';
-      isDefaultReport = file.name.includes('productos_default');
-      // show/hide UI
-      const showEls = [searchGroup, filterToggle, actionsGroup, table, resultCountDiv];
-      showEls.forEach(el => el.style.display = 'block');
-      // reset filters UI for default
-      if (isDefaultReport) {
-        statsDiv.style.display = 'none';
-        filterToggle.style.display = 'none';
-        setupHeader(['Producto','Apps','Proxies','Descartable','Razón']);
-      } else {
-        statsDiv.style.display = 'block';
-        filterToggle.style.display = 'block';
-        setupHeader(['App','Developer','Producto','Proxy','KVM','Target']);
-      }
-      // parse
-      Papa.parse(file, { header:true, delimiter:';', skipEmptyLines:true,
-        complete: results => {
-          data = results.data;
-          initializeView();
-        }
-      });
-    }
+    function initialize(){if(!isDefault){const a=new Set(data.map(r=>r.App).filter(x=>x)).size,p=new Set(data.map(r=>r.APIProduct).filter(x=>x)).size,z=new Set(data.map(r=>r.Proxy).filter(x=>x)).size;statsDiv.textContent=`Apps: ${a} | Productos: ${p} | Proxies: ${z}`;}apply();}
 
-    function initializeView() {
-      if (!isDefaultReport) {
-        const appsCount = new Set(data.map(r=>r.App).filter(a=>a)).size;
-        const prodCount = new Set(data.map(r=>r.APIProduct).filter(p=>p)).size;
-        const proxyCount = new Set(data.map(r=>r.Proxy).filter(p=>p)).size;
-        statsDiv.innerHTML = `Apps: ${appsCount} | Productos: ${prodCount} | Proxies: ${proxyCount}`;
-      }
-      applyFilters();
-    }
+    function apply(){filtered=data;countNumber.textContent=filtered.length;render();}
 
-    function applyFilters() {
-      filtered = data; countNumber.textContent = filtered.length;
-      renderTable();
-    }
+    function render(){const tb=table.querySelector('tbody');tb.innerHTML='';if(isDefault){filtered.forEach(r=>{const tr=document.createElement('tr');['Producto','Apps','Proxies','Descartable','Razón'].forEach(c=>{const td=document.createElement('td');td.textContent=r[c]||'';tr.appendChild(td);});tb.appendChild(tr);});}
+      else{const apps=[...new Set(filtered.map(r=>r.App))];apps.forEach(a=>{const rows=filtered.filter(r=>r.App===a);let first=true;rows.forEach(r=>{const tr=document.createElement('tr');if(first){['App','Developer'].forEach(c=>{const td=document.createElement('td');td.rowSpan=rows.length;td.textContent=r[c]||'';tr.appendChild(td);});first=false;}['APIProduct','Proxy','KVM','Target'].forEach(c=>{const td=document.createElement('td');td.textContent=r[c]||'';tr.appendChild(td);});tb.appendChild(tr);});});}}
 
-    function renderTable() {
-      const tbody = table.querySelector('tbody'); tbody.innerHTML = '';
-      if (isDefaultReport) {
-        filtered.forEach(r=>{
-          const tr = document.createElement('tr');
-          ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c=>{
-            const td = document.createElement('td'); td.textContent = r[c]; tr.appendChild(td);
-          }); tbody.appendChild(tr);
-        });
-      } else {
-        // previous standard render
-      }
-    }
-
-    dropzone.addEventListener('click', ()=>fileInput.click());
-    dropzone.addEventListener('drop', e=>{e.preventDefault(); handleFile(e.dataTransfer.files[0]);});
-    fileInput.addEventListener('change', ()=>handleFile(fileInput.files[0]));
+    ['input','change'].forEach(e=>{searchGroup.querySelector('input').addEventListener(e,apply);filterOptions.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.addEventListener('change',apply));});
+    copyBtn.addEventListener('click',()=>{let txt='';table.querySelectorAll('tr').forEach(r=>{txt+=Array.from(r.children).map(td=>td.textContent).join('\t')+'\n';});navigator.clipboard.writeText(txt);});
+    exportBtn.addEventListener('click',()=>{const hdr=isDefault?['Producto','Apps','Proxies','Descartable','Razón']:['App','Developer','APIProduct','Proxy','KVM','Target'],rows=filtered.map(r=>hdr.map(c=>r[c]||'')),csv=[hdr,...rows].map(a=>a.join(';')).join('\n'),b=new Blob([csv],{type:'text/csv'}),l=document.createElement('a');l.href=URL.createObjectURL(b);l.download=isDefault?'productos_default.csv':'inventario.csv';l.click();});
   </script>
 </body>
 </html>
