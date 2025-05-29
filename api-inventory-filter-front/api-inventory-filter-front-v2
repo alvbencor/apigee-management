@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario de APIs</title>
+  <style>
+    body { font-family: monospace; margin: 2rem auto; width: 80%; background-color: #3e5248; color: beige; }
+    h1 { font-family: sans-serif; color: beige; }
+    .dropzone { border: 2px dashed #afe2b1; width: 300px; height: 200px; margin: 1rem 0; display: flex; align-items: center; justify-content: center; text-align: center; color: #afe2b1; cursor: pointer; float: left; }
+    .dropzone.hover { background-color: #52675b; }
+    .loaded-message { font-size: 1rem; color: #afe2b1; margin-bottom: 1rem; display: none; clear: both; }
+    .input-group, .filter-toggle, .filter-options, .actions, table, #stats, #resultCount { display: none; clear: both; }
+    .input-group { margin: 1rem 0; }
+    .input-group input { width: 100%; max-width: 30rem; padding: 0.5rem; border: none; border-radius: 4px; background: #52675b; color: beige; }
+    .filter-toggle { margin: 1rem 0; }
+    .filter-toggle button { padding: 0.5rem 1rem; border: none; border-radius: 4px; background: #52675b; color: beige; cursor: pointer; }
+    .filter-options { margin: 1rem 0; }
+    .filter-options label { margin-right: 1rem; display: inline-block; }
+    .actions { margin: 3rem 0; }
+    .actions button { padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; border-radius: 4px; cursor: pointer; }
+    .copy-btn { background: #afe2b1; color: #3c3f3f; }
+    .export-btn { background: #ffe2b1; color: #3c3f3f; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #afe2b1; color: #3c3f3f; }
+    tr:nth-child(even) { background: #52675b; }
+    #stats, #resultCount { margin: 1rem 0; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Inventario de APIs</h1>
+  <div id="stats"><!-- stats will show for standard CSV --></div>
+
+  <div class="dropzone" id="dropzone">Arrastra tu CSV<br>o haz clic aquí</div>
+  <div class="loaded-message" id="loadedMessage">✓ Archivo cargado: <span id="loadedName"></span></div>
+  <input type="file" id="fileInput" accept=".csv" style="display:none" />
+
+  <div class="input-group" id="searchGroup"><input id="search" type="text" placeholder="Escribe para filtrar..." /></div>
+  <div class="filter-toggle" id="filterToggle"><button id="btnToggleFilters">Mostrar filtros</button></div>
+  <div class="filter-options" id="filterOptions">
+    <!-- standard filters -->
+  </div>
+  <div class="actions" id="actionsGroup">
+    <button class="copy-btn" id="copyBtn">Copiar tabla</button>
+    <button class="export-btn" id="exportBtn">Exportar a CSV</button>
+  </div>
+
+  <div id="resultCount">Total resultados: <span id="countNumber">0</span></div>
+
+  <table id="inventoryTable"><thead><tr id="headerRow"></tr></thead><tbody></tbody></table>
+
+  <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    let data = [], filtered = [], isDefaultReport = false;
+    const fileInput = document.getElementById('fileInput'), dropzone = document.getElementById('dropzone'),
+          loadedMessage = document.getElementById('loadedMessage'), loadedName = document.getElementById('loadedName'),
+          statsDiv = document.getElementById('stats'), searchGroup = document.getElementById('searchGroup'),
+          filterToggle = document.getElementById('filterToggle'), filterOptions = document.getElementById('filterOptions'),
+          actionsGroup = document.getElementById('actionsGroup'), copyBtn = document.getElementById('copyBtn'),
+          exportBtn = document.getElementById('exportBtn'), resultCountDiv = document.getElementById('resultCount'),
+          countNumber = document.getElementById('countNumber'), table = document.getElementById('inventoryTable'),
+          headerRow = document.getElementById('headerRow'), btnToggleFilters = document.getElementById('btnToggleFilters');
+
+    function setupHeader(columns) {
+      headerRow.innerHTML = '';
+      columns.forEach(col => {
+        const th = document.createElement('th'); th.textContent = col; headerRow.appendChild(th);
+      });
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      loadedName.textContent = file.name; loadedMessage.style.display = 'block';
+      isDefaultReport = file.name.includes('productos_default');
+      // show/hide UI
+      const showEls = [searchGroup, filterToggle, actionsGroup, table, resultCountDiv];
+      showEls.forEach(el => el.style.display = 'block');
+      // reset filters UI for default
+      if (isDefaultReport) {
+        statsDiv.style.display = 'none';
+        filterToggle.style.display = 'none';
+        setupHeader(['Producto','Apps','Proxies','Descartable','Razón']);
+      } else {
+        statsDiv.style.display = 'block';
+        filterToggle.style.display = 'block';
+        setupHeader(['App','Developer','Producto','Proxy','KVM','Target']);
+      }
+      // parse
+      Papa.parse(file, { header:true, delimiter:';', skipEmptyLines:true,
+        complete: results => {
+          data = results.data;
+          initializeView();
+        }
+      });
+    }
+
+    function initializeView() {
+      if (!isDefaultReport) {
+        const appsCount = new Set(data.map(r=>r.App).filter(a=>a)).size;
+        const prodCount = new Set(data.map(r=>r.APIProduct).filter(p=>p)).size;
+        const proxyCount = new Set(data.map(r=>r.Proxy).filter(p=>p)).size;
+        statsDiv.innerHTML = `Apps: ${appsCount} | Productos: ${prodCount} | Proxies: ${proxyCount}`;
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      filtered = data; countNumber.textContent = filtered.length;
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = table.querySelector('tbody'); tbody.innerHTML = '';
+      if (isDefaultReport) {
+        filtered.forEach(r=>{
+          const tr = document.createElement('tr');
+          ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c=>{
+            const td = document.createElement('td'); td.textContent = r[c]; tr.appendChild(td);
+          }); tbody.appendChild(tr);
+        });
+      } else {
+        // previous standard render
+      }
+    }
+
+    dropzone.addEventListener('click', ()=>fileInput.click());
+    dropzone.addEventListener('drop', e=>{e.preventDefault(); handleFile(e.dataTransfer.files[0]);});
+    fileInput.addEventListener('change', ()=>handleFile(fileInput.files[0]));
+  </script>
+</body>
+</html>
