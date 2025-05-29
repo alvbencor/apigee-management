@@ -221,12 +221,12 @@
           skipEmptyLines: true,
           complete: (results) => {
             data = results.data.map(r => ({
-              App: r.APP.trim(),
-              Developer: r.DEVELOPER.trim(),
-              APIProduct: r.PRODUCT.trim(),
-              Proxy: r.PROXY.trim(),
-              KVM: r.KVM.trim(),
-              Target: r.TARGET.trim()
+              App: (r.App||'').trim(),
+              Developer: (r.Developer||'').trim(),
+              APIProduct: (r.APIProduct||'').trim(),
+              Proxy: (r.Proxy||'').trim(),
+              KVM: (r.KVM||'').trim(),
+              Target: (r.Target||'').trim()
             }));
             initializeView();
           }
