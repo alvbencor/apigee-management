@@ -14,7 +14,7 @@ declare -a nonAssociatedProducts nonAssociatedProxies
 declare -A seenProd seenProxy
 
 timestamp=$(date "+%Y%m%d_%H%M")
-printf 'APP;DEVELOPER;PRODUCT;PROXY;KVM;TARGET\n' > resultado_$timestamp.csv
+printf 'App;Developer;APIProduct;Proxy;KVM;Target\n' > resultado_$timestamp.csv
 
 # 1) Entornos
 environmentsJson=$(wget --quiet --no-check-certificate \
