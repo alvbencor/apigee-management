@@ -1,5 +1,6 @@
-$APIGEE_URL=""
+#!/usr/bin/env bash
 
+$APIGEE_URL=""
 $headers = @{
     Authorization = ""
 }
