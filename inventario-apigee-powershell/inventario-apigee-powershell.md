@@ -26,7 +26,7 @@ $APIGEE_URL    = 'https://api.enterprise.apigee.com/v1/organizations/MiOrganizac
 # Encabezados HTTP para autenticación
 # Debe incluirse la línea: @{ 'Authorization' = 'Basic BASE64(user:pass)' }
 $headers = @{
-  'Authorization' = 'Basic ZXhhbXBsZVVzZXI6cGFzc3dvcmQ='
+  'Authorization' = 'Basic <base64(apigeeUser:apigeepassword)>'
 }
 ```
 
@@ -34,10 +34,10 @@ $headers = @{
 
 ## Cómo ejecutar
 
-Guarda el contenido en un archivo, por ejemplo `inventario-apigee.ps1`, y ejecútalo desde PowerShell:
+Descarga `inventario-apigee-powershell.ps1`, y ejecútalo desde PowerShell:
 
 ```powershell
-.\inventario-apigee.ps1
+.\inventario-apigee-powershell.ps1
 ```
 
 El script desplegará mensajes en pantalla indicando:
@@ -51,7 +51,7 @@ Y al final mostrará:
 Archivo CSV generado: inventario_apigee_<timestamp>.csv
 ```
 
-El fichero se creará en el directorio actual.
+El fichero se creará en el directorio actual al finalizar el script. 
 
 ---
 
@@ -91,3 +91,4 @@ MyApp;alice@example.com;OrderAPI;order-proxy;urlEndpoint;https://orders.example.
 - El script ignora errores en llamadas a KVM ausentes (`try { … } catch {}`).
 - El timestamp en el nombre de fichero sigue el formato `yyyyMMdd_HHmmss`.
 - Ajusta permisos del archivo si lo distribuyes en un repositorio.
+- la salida está optiizada para leerse comodamente con el [front de este repositorio.](https://github.com/alvbencor/apigee-management/blob/main/api-inventory-filter-front/readme.md) 
