@@ -34,71 +34,6 @@
     /* Oculto inicialmente excepto zona de carga */
     #stats, .loaded-message, .search-filter, #filterToggle, #filterOptions, #actionsGroup, #resultCount, .table-container {
       display: none;
-<<<<<<< HEAD
-=======
-      clear: both;
-    }
-    .input-group,
-    .filter-toggle,
-    .filter-options,
-    .actions,
-    table,
-    #stats,
-    #resultCount {
-      display: none;
-      clear: both;
-    }
-    .input-group {
-      margin: 1rem 0;
-    }
-    .input-group input {
-      width: 100%;
-      max-width: 30rem;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      font-family: monospace;
-      color: beige;
-      background: #52675b;
-    }
-    .filter-toggle {
-      margin: 1rem 0;
-    }
-    .filter-toggle button {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #52675b;
-      color: beige;
-      cursor: pointer;
-      font-family: monospace;
-    }
-    .filter-options {
-      margin: 1rem 0;
-      font-family: monospace;
-    }
-    .filter-options label {
-      margin-right: 1rem;
-      display: inline-block;
-    }
-    .actions {
-      margin: 3rem 0;
-    }
-    .actions button {
-      padding: 0.5rem 1rem;
-      margin-right: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      font-family: monospace;
-      cursor: pointer;
-    }
-    .actions button.copy-btn { background-color: #afe2b1; color: #3c3f3f; }
-    .actions button.export-btn { background-color: #ffe2b1; color: #3c3f3f; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
     }
     #stats, #resultCount { margin: 1rem 0; font-size: 1rem; }
     .search-filter { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
@@ -137,18 +72,10 @@
       z-index: 2;
     }
     tr:nth-child(even) { background-color: #52675b; }
-<<<<<<< HEAD
-=======
-    #stats, #resultCount {
-      margin: 1rem 0;
-      font-size: 1rem;
-    }
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
   </style>
 </head>
 <body>
   <h1>Inventario de APIs</h1>
-<<<<<<< HEAD
   <!-- Zona de carga inicial -->
   <div class="file-loading" id="fileLoading">
     <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
@@ -182,47 +109,10 @@
   </div>
   <!-- Acciones -->
   <div id="actionsGroup" class="actions">
-=======
-  <div id="stats">
-    <span id="statApps">Apps: 0</span> |
-    <span id="statProducts">Productos: 0</span> |
-    <span id="statProxies">Proxies: 0</span>
-  </div>
-
-  <div class="dropzone" id="dropzone">
-    <div>Arrastra tu CSV<br>o haz clic aquí</div>
-  </div>
-  <div class="loaded-message" id="loadedMessage">
-    ✓ Archivo cargado: <span id="loadedName"></span>
-  </div>
-  <input type="file" id="fileInput" accept=".csv" style="display:none" />
-
-  <div class="input-group" id="searchGroup">
-    <input id="search" type="text" placeholder="Escribe para filtrar..." />
-  </div>
-
-  <div class="filter-toggle" id="filterToggle">
-    <button id="btnToggleFilters">Mostrar filtros</button>
-  </div>
-  <div class="filter-options" id="filterOptions">
-    <label><input type="checkbox" id="chkApp" checked /> Apps</label>
-    <label><input type="checkbox" id="chkDev" checked /> Developers</label>
-    <label><input type="checkbox" id="chkProd" checked /> Productos</label>
-    <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
-    <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
-    <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
-    <br />
-    <label><input type="checkbox" id="chkProdSinApp" /> Sólo productos sin app</label>
-    <label><input type="checkbox" id="chkProxySinProd" /> Sólo proxies sin producto</label>
-  </div>
-
-  <div class="actions" id="actionsGroup">
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
     <button class="copy-btn" id="copyBtn">Copiar tabla</button>
     <button class="export-btn" id="exportBtn">Exportar a CSV</button>
   </div>
   <div id="resultCount">Total resultados: <span id="countNumber">0</span></div>
-<<<<<<< HEAD
   <!-- Tabla -->
   <div class="table-container">
     <table id="inventoryTable">
@@ -230,23 +120,6 @@
       <tbody></tbody>
     </table>
   </div>
-=======
-
-  <table id="inventoryTable">
-    <thead>
-      <tr>
-        <th>App</th>
-        <th>Developer</th>
-        <th>Producto</th>
-        <th>Proxy</th>
-        <th>KVM</th>
-        <th>Target</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
     let data = [], filtered = [], isDefault = false;
@@ -265,22 +138,10 @@
     const toggleText = document.getElementById('toggleText');
     const filterOptions = document.getElementById('filterOptions');
     const actionsGroup = document.getElementById('actionsGroup');
-<<<<<<< HEAD
     const resultCountDiv = document.getElementById('resultCount');
     const countNumber = document.getElementById('countNumber');
     const headerRow = document.getElementById('headerRow');
     const search = document.getElementById('search');
-=======
-    const copyBtn = document.getElementById('copyBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const statsDiv = document.getElementById('stats');
-    const statApps = document.getElementById('statApps');
-    const statProducts = document.getElementById('statProducts');
-    const statProxies = document.getElementById('statProxies');
-    const resultCountDiv = document.getElementById('resultCount');
-    const countNumber = document.getElementById('countNumber');
-    const table = document.getElementById('inventoryTable');
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
 
     // Eventos zona de carga
     ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('hover'); }));
@@ -296,7 +157,6 @@
         .catch(err => alert('Error: ' + err));
     });
 
-<<<<<<< HEAD
     // Toggle filtros
     filterToggle.addEventListener('click', () => {
       const open = filterOptions.style.display === 'block';
@@ -354,59 +214,6 @@
         return true;
       });
       const term = (searchInput.value||'').toLowerCase();
-=======
-    function handleFile(file) {
-      if (!file) return;
-      dropzone.style.display = 'none';
-      loadedName.textContent = file.name;
-      loadedMessage.style.display = 'block';
-      [statsDiv, searchGroup, filterToggle, actionsGroup, table, resultCountDiv].forEach(el => el.style.display = 'block');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        let text = e.target.result;
-        const [header, ...rest] = text.split(/\r?\n/);
-        const fixedHeader = header.replace(/,/g, ';');
-        const fixedText = [fixedHeader, ...rest].join('\n');
-        Papa.parse(fixedText, {
-          header: true,
-          delimiter: ';',
-          skipEmptyLines: true,
-          complete: (results) => {
-            data = results.data.map(r => ({
-              App: (r.App||'').trim(),
-              Developer: (r.Developer||'').trim(),
-              APIProduct: (r.APIProduct||'').trim(),
-              Proxy: (r.Proxy||'').trim(),
-              KVM: (r.KVM||'').trim(),
-              Target: (r.Target||'').trim()
-            }));
-            initializeView();
-          }
-        });
-      };
-      reader.readAsText(file, 'UTF-8');
-    }
-
-    function initializeView() {
-      const appsCount = new Set(data.map(r => r.App).filter(a => a)).size;
-      const prodCount = new Set(data.map(r => r.APIProduct).filter(p => p)).size;
-      const proxyCount = new Set(data.map(r => r.Proxy).filter(p => p)).size;
-      statApps.textContent = `Apps: ${appsCount}`;
-      statProducts.textContent = `Productos: ${prodCount}`;
-      statProxies.textContent = `Proxies: ${proxyCount}`;
-      applyFilters();
-    }
-
-    function applyFilters() {
-      let temp = data;
-      if (document.getElementById('chkProdSinApp').checked) {
-        temp = temp.filter(r => !r.App && r.APIProduct);
-      } else if (document.getElementById('chkProxySinProd').checked) {
-        temp = temp.filter(r => !r.APIProduct && r.Proxy);
-      }
-      const term = searchInput.value.toLowerCase();
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
       const cols = [];
       document.getElementById('chkApp').checked && cols.push('App');
       document.getElementById('chkDev').checked && cols.push('Developer');
@@ -420,7 +227,6 @@
     }
 
     function renderTable() {
-<<<<<<< HEAD
       const tbody = document.querySelector('#inventoryTable tbody'); tbody.innerHTML = '';
       if (isDefault) {
         filtered.forEach(r => {
@@ -428,23 +234,6 @@
           ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
             const td = document.createElement('td'); td.textContent = r[c]||''; tr.appendChild(td);
           });
-=======
-      const tbody = table.querySelector('tbody');
-      tbody.innerHTML = '';
-      const apps = [...new Set(filtered.map(r => r.App))];
-      apps.forEach(app => {
-        const appRows = filtered.filter(r => r.App === app);
-        let printed = false;
-        appRows.forEach(r => {
-          const tr = document.createElement('tr');
-          if (!printed) {
-            const tdA = document.createElement('td'); tdA.rowSpan = appRows.length; tdA.textContent = r.App; tr.appendChild(tdA);
-            const tdD = document.createElement('td'); tdD.rowSpan = appRows.length; tdD.textContent = r.Developer; tr.appendChild(tdD);
-            printed = true;
-          }
-          const tdP = document.createElement('td'); tdP.textContent = r.APIProduct; tr.appendChild(tdP);
-          [r.Proxy, r.KVM, r.Target].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
           tbody.appendChild(tr);
         });
       } else {
@@ -482,7 +271,6 @@
       };
     }
 
-<<<<<<< HEAD
     function exportSetup() {
       const btn = document.getElementById('exportBtn'); btn.onclick = () => {
         const hdr = isDefault ? ['Producto','Apps','Proxies','Descartable','Razón'] : ['App','Developer','APIProduct','Proxy','KVM','Target'];
@@ -497,24 +285,6 @@
     // Inicializar copia y export al cargar el script
     copySetup();
     exportSetup();
-=======
-    copyBtn.addEventListener('click', () => {
-      let txt = '';
-      table.querySelectorAll('tr').forEach(row => {
-        txt += Array.from(row.querySelectorAll('th, td')).map(td => td.textContent).join('\t') + '\n';
-      });
-      navigator.clipboard.writeText(txt).then(() => alert('Tabla copiada al portapapeles'));
-    });
-
-    exportBtn.addEventListener('click', () => {
-      const hdr = ['App','Developer','APIProduct','Proxy','KVM','Target'];
-      const rows = filtered.map(r => [r.App,r.Developer,r.APIProduct,r.Proxy,r.KVM,r.Target]);
-      const csv = [hdr, ...rows].map(e => e.join(';')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
-      link.download = 'inventario_filtrado.csv'; link.click();
-    });
->>>>>>> 6a1cc37abf70d838b2a6d7a9d5d3c1a882bd3fdf
   </script>
 </body>
 </html>
