@@ -14,7 +14,7 @@ declare -a nonAssociatedProducts nonAssociatedProxies
 declare -A seenProd seenProxy
 
 timestamp=$(date "+%Y%m%d_%H%M")
-printf 'APP;DEVELOPER;PRODUCT;PROXY;KVM;TARGET\n' > resultado_$timestamp.csv
+printf 'App;Developer;APIProduct;Proxy;KVM;Target\n' > resultado_$timestamp.csv
 
 # 1) Entornos
 environmentsJson=$(wget --quiet --no-check-certificate \
@@ -118,10 +118,10 @@ for dev in "${developers[@]}"; do
                                 mapfile -t url < <(echo "$entryValue" | jq -r '.[]')
 
                                 printf '%s;%s;%s;%s;%s;%s;\n' \
-                                    "$app" "$dev" "$product" "$proxy" "$entry" "${url[@]}" \
+                                    "$app" "$dev" "$product" "$proxy" "${url[@]}" \
                                     >> resultado_$timestamp.csv
 
-                                    echo "$app | $dev | $product | $proxy | $entry | ${url[@]} "
+                                    echo "$app | $dev | $product | $proxy | ${url[@]} "
 
                             fi
                         done
@@ -182,11 +182,11 @@ for product in "${nonAssociatedProducts[@]}"; do
                         mapfile -t url < <(echo "$entryValue" | jq -r '.[]')
 
                         printf '%s;%s;%s;%s;%s;%s;\n' \
-                            "---" "---" "$product" "$proxy" "$entry" "${url[@]}" \
+                            "---" "---" "$product" "$proxy" "${url[@]}" \
                             >> resultado_$timestamp.csv
 
 
-                            echo "---| --- | $product | $proxy | $entry | ${url[@]} "
+                            echo "---| --- | $product | $proxy | ${url[@]} "
                     fi
                 done
             fi
@@ -231,10 +231,10 @@ for proxy in "${nonAssociatedProxies[@]}"; do
                     mapfile -t url < <(echo "$entryValue" | jq -r '.[]')
 
                     printf '%s;%s;%s;%s;%s;%s;\n' \
-                        "---" "---" " ---" "$proxy" "$entry" "${url[@]}" \
+                        "---" "---" " ---" "$proxy" "${url[@]}" \
                         >> resultado_$timestamp.csv
 
-                        echo "---| --- | --- | $proxy | $entry | ${url[@]} "
+                        echo "---| --- | --- | $proxy | ${url[@]} "
                 fi
             done
         fi
