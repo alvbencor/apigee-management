@@ -12,284 +12,279 @@
       background-color: #3e5248;
       color: beige;
     }
-    h1 {
-      font-family: sans-serif;
-      color: beige;
-    }
+    h1 { font-family: sans-serif; color: beige; }
+    /* Zona de carga */
+    .file-loading { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
     .dropzone {
       border: 2px dashed #afe2b1;
-      width: 300px;
-      height: 200px;
-      margin: 1rem 0;
+      width: 17rem;
+      height: calc(2.5rem * 2 + 0.5rem);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       color: #afe2b1;
       cursor: pointer;
-      float: left;
     }
     .dropzone.hover { background-color: #52675b; }
-    .loaded-message {
-      font-size: 1rem;
-      color: #afe2b1;
-      margin-bottom: 1rem;
+    .url-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .url-group input, .url-group button { height: 2.5rem; padding: 0 0.5rem; border: none; border-radius: 4px; font-family: monospace; }
+    .url-group input { background: #52675b; color: beige; width: 17rem; }
+    .url-group button { background: #85ecb2; color: #3c3f3f; cursor: pointer; }
+    /* Oculto inicialmente excepto zona de carga */
+    #stats, .loaded-message, .search-filter, #filterToggle, #filterOptions, #actionsGroup, #resultCount, .table-container {
       display: none;
-      clear: both;
     }
-    .input-group,
-    .filter-toggle,
-    .filter-options,
-    .actions,
-    table,
-    #stats,
-    #resultCount {
-      display: none;
-      clear: both;
-    }
-    .input-group { margin: 1rem 0; }
-    .input-group input {
-      width: 100%;
-      max-width: 30rem;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      font-family: monospace;
-      color: beige;
-      background: #52675b;
-    }
-    .filter-toggle { margin: 1rem 0; }
-    .filter-toggle button {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #52675b;
-      color: beige;
-      cursor: pointer;
-      font-family: monospace;
-    }
-    .filter-options { margin: 1rem 0; font-family: monospace; }
-    .filter-options label { margin-right: 1rem; display: inline-block; }
-    .actions { margin: 3rem 0; }
-    .actions button {
-      padding: 0.5rem 1rem;
-      margin-right: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      font-family: monospace;
-      cursor: pointer;
-    }
-    .actions button.copy-btn { background-color: #afe2b1; color: #3c3f3f; }
-    .actions button.export-btn { background-color: #ffe2b1; color: #3c3f3f; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-    }
+    #stats, #resultCount { margin: 1rem 0; font-size: 1rem; }
+    .search-filter { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
+    #searchGroup input { width: 100%; max-width: 30rem; padding: 0.5rem; border: none; border-radius: 4px; background: #52675b; color: beige; }
+    #search{display: none;}
+    .filter-toggle { cursor: pointer; font-family: monospace; }
+    .filter-toggle span { user-select: none; color: #fbf3a3; }
+    #filterOptions { margin: 1rem 0; font-family: monospace; }
+    #filterOptions .radios, #filterOptions .checkboxes { margin: 0.5rem 0; }
+    #filterOptions label { margin-right: 1rem; }
+    #loadedName { color: #85ecb2; }
+    #loadedMessage { color: #5d9c79; }
+    .actions { display: flex; gap: 1rem; margin: 1rem 0; }
+    .actions button { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; }
+    .copy-btn { background-color: #fbf3a3; color: #3c3f3f; }
+    .export-btn { background-color: #abfbb0; color: #3c3f3f; }
+    #toggleArrow{margin-left: 1rem;}
+    /* Tabla */
+    .table-container { max-width: 80vw; margin: 0 auto 2rem; overflow: auto; max-height: calc(100vh - 20rem); }
+    table { table-layout: fixed; width: 100%; border-collapse: collapse; }
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 0.3rem;
       text-align: left;
       font-family: monospace;
+      max-width: 15vw;
+      word-wrap: break-word;
+      word-break: break-all;
+      overflow: hidden;
     }
-    th { background-color: #afe2b1; color: #3c3f3f; }
+    th {
+      background-color: #afe2b1;
+      color: #3c3f3f;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
     tr:nth-child(even) { background-color: #52675b; }
-    #stats, #resultCount { margin: 1rem 0; font-size: 1rem; }
   </style>
 </head>
 <body>
   <h1>Inventario de APIs</h1>
-  <!-- Estadísticas -->
-  <div id="stats">
-    <span id="statApps">Apps: 0</span> |
-    <span id="statProducts">Productos: 0</span> |
-    <span id="statProxies">Proxies: 0</span>
+  <!-- Zona de carga inicial -->
+  <div class="file-loading" id="fileLoading">
+    <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
+    <div class="url-group" id="urlGroup">
+      <input type="text" id="urlInput" placeholder="Introduce URL o ruta local">
+      <button id="loadUrlBtn">Cargar inventario</button>
+    </div>
   </div>
-
-  <!-- Zona de arrastre -->
-  <div class="dropzone" id="dropzone">
-    <div>Arrastra tu CSV<br>o haz clic aquí</div>
+  <div id="stats"></div>
+  <div class="loaded-message" id="loadedMessage">✓ Archivo cargado: <span id="loadedName"></span></div>
+  <input type="file" id="fileInput" accept=".csv" style="display:none">
+  <!-- Búsqueda y filtros -->
+  <div class="search-filter">
+    <div id="searchGroup"><input id="search" type="text" placeholder="Escribe para filtrar..."></div>
+    <div class="filter-toggle" id="filterToggle"><span id="toggleArrow">▸</span> <span id="toggleText">Mostrar filtros</span></div>
   </div>
-
-  <!-- Mensaje tras carga -->
-  <div class="loaded-message" id="loadedMessage">
-    ✓ Archivo cargado: <span id="loadedName"></span>
+  <div id="filterOptions">
+    <div class="radios">
+      <label><input type="radio" name="mode" value="all" checked> Todo</label>
+      <label><input type="radio" name="mode" value="prodSinApp"> Sólo productos sin app</label>
+      <label><input type="radio" name="mode" value="proxySinProd"> Sólo proxies sin producto</label>
+    </div>
+    <div class="checkboxes">
+      <label><input type="checkbox" id="chkApp" checked /> Apps</label>
+      <label><input type="checkbox" id="chkDev" checked /> Developers</label>
+      <label><input type="checkbox" id="chkProd" checked /> Productos</label>
+      <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
+      <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
+      <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
+    </div>
   </div>
-  <input type="file" id="fileInput" accept=".csv" style="display:none" />
-
-  <!-- Buscador -->
-  <div class="input-group" id="searchGroup">
-    <input id="search" type="text" placeholder="Escribe para filtrar..." />
-  </div>
-
-  <!-- Toggle filtros -->
-  <div class="filter-toggle" id="filterToggle">
-    <button id="btnToggleFilters">Mostrar filtros</button>
-  </div>
-
-  <!-- Opciones de filtro adicional -->
-  <div class="filter-options" id="filterOptions">
-    <label><input type="checkbox" id="chkApp" checked /> Apps</label>
-    <label><input type="checkbox" id="chkDev" checked /> Developers</label>
-    <label><input type="checkbox" id="chkProd" checked /> Productos</label>
-    <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
-    <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
-    <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
-    <br />
-    <label><input type="checkbox" id="chkProdSinApp" /> Sólo productos sin app</label>
-    <label><input type="checkbox" id="chkProxySinProd" /> Sólo proxies sin producto</label>
-  </div>
-
   <!-- Acciones -->
-  <div class="actions" id="actionsGroup">
+  <div id="actionsGroup" class="actions">
     <button class="copy-btn" id="copyBtn">Copiar tabla</button>
     <button class="export-btn" id="exportBtn">Exportar a CSV</button>
   </div>
-
-  <!-- Conteo resultados -->
   <div id="resultCount">Total resultados: <span id="countNumber">0</span></div>
-
   <!-- Tabla -->
-  <table id="inventoryTable">
-    <thead>
-      <tr>
-        <th>App</th>
-        <th>Developer</th>
-        <th>Producto</th>
-        <th>Proxy</th>
-        <th>KVM</th>
-        <th>Target</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <!-- Dependencias -->
+  <div class="table-container">
+    <table id="inventoryTable">
+      <thead><tr id="headerRow"></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    let data = [], filtered = [];
+    let data = [], filtered = [], isDefault = false;
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
+    const urlInput = document.getElementById('urlInput');
+    const loadUrlBtn = document.getElementById('loadUrlBtn');
+    const fileLoading = document.getElementById('fileLoading');
     const loadedMessage = document.getElementById('loadedMessage');
     const loadedName = document.getElementById('loadedName');
-    const searchGroup = document.getElementById('searchGroup');
+    const statsDiv = document.getElementById('stats');
     const searchInput = document.getElementById('search');
+    const searchFilter = document.querySelector('.search-filter');
     const filterToggle = document.getElementById('filterToggle');
-    const btnToggleFilters = document.getElementById('btnToggleFilters');
+    const toggleArrow = document.getElementById('toggleArrow');
+    const toggleText = document.getElementById('toggleText');
     const filterOptions = document.getElementById('filterOptions');
     const actionsGroup = document.getElementById('actionsGroup');
-    const copyBtn = document.getElementById('copyBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const table = document.getElementById('inventoryTable');
-    const statsDiv = document.getElementById('stats');
-    const statApps = document.getElementById('statApps');
-    const statProducts = document.getElementById('statProducts');
-    const statProxies = document.getElementById('statProxies');
-    const resultCount = document.getElementById('resultCount');
+    const resultCountDiv = document.getElementById('resultCount');
     const countNumber = document.getElementById('countNumber');
+    const headerRow = document.getElementById('headerRow');
+    const search = document.getElementById('search');
 
+    // Eventos zona de carga
     ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('hover'); }));
     ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('hover'); }));
     dropzone.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
     dropzone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
-
-    btnToggleFilters.addEventListener('click', () => {
-      const visible = filterOptions.style.display === 'block';
-      filterOptions.style.display = visible ? 'none' : 'block';
-      btnToggleFilters.textContent = visible ? 'Mostrar filtros' : 'Ocultar filtros';
+    loadUrlBtn.addEventListener('click', () => {
+      if (!urlInput.value) return alert('Introduce una URL o ruta');
+      fetch(urlInput.value)
+        .then(res => res.text())
+        .then(txt => handleFile(new Blob([txt], { type: 'text/csv' }), urlInput.value))
+        .catch(err => alert('Error: ' + err));
     });
 
-    function handleFile(file) {
-      if (!file) return;
-      dropzone.style.display = 'none';
-      loadedName.textContent = file.name;
-      loadedMessage.style.display = 'block';
-      [statsDiv, searchGroup, filterToggle, actionsGroup, table, resultCount].forEach(el => el.style.display = 'block');
-      // filterOptions remains hidden until toggled
+    // Toggle filtros
+    filterToggle.addEventListener('click', () => {
+      const open = filterOptions.style.display === 'block';
+      filterOptions.style.display = open ? 'none' : 'block';
+      toggleArrow.textContent = open ? '▸' : '▾';
+      toggleText.textContent = open ? 'Mostrar filtros' : 'Ocultar filtros';
+    });
 
-      Papa.parse(file, { header: true, delimiter: ';', skipEmptyLines: true, complete: results => {
-        data = results.data.map(r => ({
-          App: (r.App||'').trim(),
-          Developer: (r.Developer||'').trim(),
-          APIProduct: (r.APIProduct||'').trim(),
-          Proxy: (r.Proxy||'').trim(),
-          KVM: (r.KVM||'').trim(),
-          Target: (r.Target||'').trim()
-        }));
-        // calcular estadísticas
-        const appsCount = new Set(data.map(r => r.App)).size;
-        const prodCount = new Set(data.map(r => r.APIProduct)).size;
-        const proxyCount = new Set(data.map(r => r.Proxy)).size;
-        statApps.textContent = `Apps: ${appsCount}`;
-        statProducts.textContent = `Productos: ${prodCount}`;
-        statProxies.textContent = `Proxies: ${proxyCount}`;
-        applyFilters();
-      }});
+    function handleFile(file, nameOverride) {
+      const name = nameOverride || file.name;
+      isDefault = name.includes('-default');
+      fileLoading.style.display = 'none';
+      loadedMessage.style.display = 'block';
+      search.style.display = 'block';
+      loadedName.textContent = name;
+      statsDiv.style.display = isDefault ? 'none' : 'block';
+      searchFilter.style.display = isDefault ? 'none' : 'flex';
+      filterToggle.style.display = isDefault ? 'none' : 'block';
+      filterOptions.style.display = 'none';
+      actionsGroup.style.display = isDefault ? 'none' : 'flex';
+      resultCountDiv.style.display = isDefault ? 'none' : 'block';
+      document.querySelector('.table-container').style.display = 'block';
+      const headers = isDefault ? ['Producto','Apps','Proxies','Descartable','Razón'] : ['App','Developer','APIProduct','Proxy','KVM','Target'];
+      setupHeader(headers);
+      Papa.parse(file, { header: true, delimiter: ';', skipEmptyLines: true, complete: res => { data = res.data; init(); }});
+    }
+
+    function setupHeader(cols) {
+      headerRow.innerHTML = '';
+      cols.forEach(c => { const th = document.createElement('th'); th.textContent = c; headerRow.appendChild(th); });
+    }
+
+    function init() {
+      if (!isDefault) {
+        const apps = new Set(data.map(r => r.App).filter(x => x)).size;
+        const prods = new Set(data.map(r => r.APIProduct).filter(x => x)).size;
+        const prox = new Set(data.map(r => r.Proxy).filter(x => x)).size;
+        statsDiv.textContent = `Apps: ${apps} | Productos: ${prods} | Proxies: ${prox}`;
+      }
+      attachEvents();
+      applyFilters();
+    }
+
+    function attachEvents() {
+      searchInput.addEventListener('input', applyFilters);
+      filterOptions.querySelectorAll('input[name=\"mode\"]').forEach(rb => rb.addEventListener('change', applyFilters));
+      filterOptions.querySelectorAll('input[type=\"checkbox\"]').forEach(cb => cb.addEventListener('change', applyFilters));
     }
 
     function applyFilters() {
-      const prodSinApp = document.getElementById('chkProdSinApp').checked;
-      const proxySinProd = document.getElementById('chkProxySinProd').checked;
+      const mode = document.querySelector('input[name=\"mode\"]:checked').value;
       let temp = data.filter(r => {
-        if (prodSinApp && r.App !== '') return false;
-        if (proxySinProd && r.APIProduct !== '') return false;
+        if (mode === 'prodSinApp') return !(r.App||'').trim() && (r.APIProduct||'').trim();
+        if (mode === 'proxySinProd') return !(r.APIProduct||'').trim() && (r.Proxy||'').trim();
         return true;
       });
-      const term = searchInput.value.toLowerCase();
+      const term = (searchInput.value||'').toLowerCase();
       const cols = [];
-      if (document.getElementById('chkApp').checked) cols.push('App');
-      if (document.getElementById('chkDev').checked) cols.push('Developer');
-      if (document.getElementById('chkProd').checked) cols.push('APIProduct');
-      if (document.getElementById('chkProxy').checked) cols.push('Proxy');
-      if (document.getElementById('chkKVM').checked) cols.push('KVM');
-      if (document.getElementById('chkTarget').checked) cols.push('Target');
-      filtered = temp.filter(r => cols.some(c => r[c].toLowerCase().includes(term)));
+      document.getElementById('chkApp').checked && cols.push('App');
+      document.getElementById('chkDev').checked && cols.push('Developer');
+      document.getElementById('chkProd').checked && cols.push('APIProduct');
+      document.getElementById('chkProxy').checked && cols.push('Proxy');
+      document.getElementById('chkKVM').checked && cols.push('KVM');
+      document.getElementById('chkTarget').checked && cols.push('Target');
+      filtered = temp.filter(r => cols.some(c => (r[c]||'').toLowerCase().includes(term)));
       countNumber.textContent = filtered.length;
       renderTable();
     }
 
     function renderTable() {
       const tbody = document.querySelector('#inventoryTable tbody'); tbody.innerHTML = '';
-      const apps = [...new Set(filtered.map(r => r.App))];
-      apps.forEach(app => {
-        const appRows = filtered.filter(r => r.App === app);
-        let printed = false;
-        appRows.forEach(r => {
+      if (isDefault) {
+        filtered.forEach(r => {
           const tr = document.createElement('tr');
-          if (!printed) {
-            const tdA = document.createElement('td'); tdA.rowSpan = appRows.length; tdA.textContent = app; tr.appendChild(tdA);
-            const tdD = document.createElement('td'); tdD.rowSpan = appRows.length; tdD.textContent = r.Developer; tr.appendChild(tdD);
-            printed = true;
-          }
-          const tdP = document.createElement('td'); tdP.textContent = r.APIProduct; tr.appendChild(tdP);
-          [r.Proxy, r.KVM, r.Target].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+          ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
+            const td = document.createElement('td'); td.textContent = r[c]||''; tr.appendChild(td);
+          });
           tbody.appendChild(tr);
         });
-      });
+      } else {
+        [...new Set(filtered.map(r => r.App))].forEach(app => {
+          const rows = filtered.filter(r => r.App === app);
+          let first = true;
+          rows.forEach(r => {
+            const tr = document.createElement('tr');
+            if (first) {
+              ['App','Developer'].forEach(c => {
+                const td = document.createElement('td'); td.rowSpan = rows.length; td.textContent = r[c]||''; tr.appendChild(td);
+              }); first = false;
+            }
+            ['APIProduct','Proxy','KVM','Target'].forEach(c => {
+              const td = document.createElement('td'); td.textContent = r[c]||''; tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+        });
+      }
     }
 
-    ['input','change'].forEach(evt => {
-      searchInput.addEventListener(evt, applyFilters);
-      filterOptions.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', applyFilters));
-    });
+    function copySetup() {
+      const btn = document.getElementById('copyBtn'); btn.onclick = async () => {
+        const tbl = document.getElementById('inventoryTable');
+        const html = tbl.outerHTML;
+        let text = '';
+        tbl.querySelectorAll('tr').forEach(row => { text += Array.from(row.children).map(td => td.innerText).join('\t') + '\n'; });
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([text], { type: 'text/plain' }) })]);
+          alert('Tabla copiada con formato');
+        } catch {
+          navigator.clipboard.writeText(text).then(() => alert('Tabla copiada como texto'));
+        }
+      };
+    }
 
-    copyBtn.addEventListener('click', () => {
-      let txt = '';
-      document.querySelectorAll('#inventoryTable tr').forEach(row => {
-        txt += Array.from(row.querySelectorAll('th, td')).map(td => td.textContent).join('\t') + '\n';
-      });
-      navigator.clipboard.writeText(txt).then(() => alert('Tabla copiada al portapapeles'));
-    });
+    function exportSetup() {
+      const btn = document.getElementById('exportBtn'); btn.onclick = () => {
+        const hdr = isDefault ? ['Producto','Apps','Proxies','Descartable','Razón'] : ['App','Developer','APIProduct','Proxy','KVM','Target'];
+        const rows = filtered.map(r => hdr.map(c => r[c]||''));
+        const csv = [hdr, ...rows].map(a => a.join(';')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+        link.download = isDefault ? 'productos_default.csv' : 'inventario.csv'; link.click();
+      };
+    }
 
-    exportBtn.addEventListener('click', () => {
-      const hdr=['App','Developer','APIProduct','Proxy','KVM','Target'];
-      const rows=filtered.map(r=>[r.App,r.Developer,r.APIProduct,r.Proxy,r.KVM,r.Target]);
-      const csv=[hdr,...rows].map(e=>e.join(';')).join('\n');
-      const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-      const link=document.createElement('a');link.href=URL.createObjectURL(blob);
-      link.download='inventario_filtrado.csv';link.click();
-    });
+    // Inicializar copia y export al cargar el script
+    copySetup();
+    exportSetup();
   </script>
 </body>
 </html>

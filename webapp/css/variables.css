@@ -1,0 +1,17 @@
+:root {
+  --petroleo: #004a4dff;
+  --verde-oscuro:rgb(40, 49, 39);
+  --fucsia:   #fcef35ff;
+  --amarillo: #fcef35ff;
+  --blanco:   #d8e2ebff;
+    /* Anchos del sidebar */
+  --sidebar-width-collapsed: 5%;
+  --sidebar-width-expanded: 20%;
+  --sidebar-width: var(--sidebar-width-collapsed);
+  /* Tamaños de icono */
+  --icon-size-collapsed: 1.5rem;
+  --icon-size-expanded: 1rem;
+  --icon-size: var(--icon-size-collapsed);
+  --transition-duration: 0.3s;
+  
+}

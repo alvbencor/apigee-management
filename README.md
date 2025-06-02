@@ -1,10 +1,10 @@
-# Proxy Inventory Script
+# appigee-management
 
-Este repositorio contiene un script en **PowerShell** para generar un inventario completo de tus Apps, API Products, Proxies y entradas KVM (KeyValueMap) en Apigee, incluyendo aquellos productos o proxies que no estén asociados a ninguna App.
+
 
 ## Descripción
 
-`apigee-proxy-inventory.ps1` automatiza el mapeo de:
+`api-inventory-filter-front` automatiza el mapeo de:
 
 1. **Developers** y sus **Apps**.
 2. **API Products** vinculados a cada App.
@@ -64,8 +64,6 @@ myApp;alice@example.com;MyProduct;ordersProxy;urlEndpoint;https://backend.exampl
 ---;---;---;auditProxy;urlEndpoint;https://audit.example.com/log
 ```
 
-- Las filas con `---` en las primeras columnas corresponden a productos o proxies sin Apps asociadas.
-
 ## Manejo de errores y casos especiales
 
 - El script detiene la ejecución en caso de errores HTTP o variables no definidas (`set -euo pipefail`).
@@ -85,5 +83,3 @@ myApp;alice@example.com;MyProduct;ordersProxy;urlEndpoint;https://backend.exampl
 3. Añade y prueba tus cambios.
 4. Haz commit con un mensaje descriptivo.
 5. Abre un Pull Request.
-
-Por favor sigue el estilo del script y añade comentarios en cada función nueva.
