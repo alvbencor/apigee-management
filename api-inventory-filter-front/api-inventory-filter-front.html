@@ -191,8 +191,12 @@
       z-index: 2;
       cursor: pointer;
     }
-    tr:nth-child(even) {
+    /* Sombreado alterno por grupo de app */
+    .group-even td {
       background-color: #52675b;
+    }
+    .group-odd td {
+      background-color: #3d5a4f;
     }
 
     /* Input en cabecera */
@@ -633,9 +637,12 @@
     function renderTable() {
       const tbody = document.querySelector('#inventoryTable tbody');
       tbody.innerHTML = '';
+
       if (isDefault) {
-        filtered.forEach(r => {
+        filtered.forEach((r, idx) => {
           const tr = document.createElement('tr');
+          // Alternar sombreado: fila par/impar normal para default
+          tr.className = idx % 2 === 0 ? 'group-even' : 'group-odd';
           ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
             const td = document.createElement('td');
             td.textContent = r[c] || '';
@@ -644,26 +651,63 @@
           tbody.appendChild(tr);
         });
       } else {
-        [...new Set(filtered.map(r => r.App))].forEach(app => {
-          const rows = filtered.filter(r => r.App === app);
-          let first = true;
-          rows.forEach(r => {
-            const tr = document.createElement('tr');
-            if (first) {
-              ['App','Developer'].forEach(c => {
-                const td = document.createElement('td');
-                td.rowSpan = rows.length;
-                td.textContent = r[c] || '';
-                tr.appendChild(td);
-              });
-              first = false;
-            }
-            ['APIProduct','Proxy','KVM','Target'].forEach(c => {
-              const td = document.createElement('td');
-              td.textContent = r[c] || '';
-              tr.appendChild(td);
+        // Agrupar por App y alternar sombreado por grupo
+        const appsUnicos = Array.from(new Set(filtered.map(r => r.App)));
+        appsUnicos.forEach((app, appIdx) => {
+          const rowsPorApp = filtered.filter(r => r.App === app);
+          const totalFilasApp = rowsPorApp.length;
+          const groupClass = appIdx % 2 === 0 ? 'group-even' : 'group-odd';
+
+          // Dentro de cada app, agrupar por producto
+          const productos = Array.from(new Set(rowsPorApp.map(r => r.APIProduct)));
+          let appRowStart = true;
+
+          productos.forEach(prod => {
+            const rowsPorProducto = rowsPorApp.filter(r => r.APIProduct === prod);
+            const filasProxy = rowsPorProducto.length;
+
+            rowsPorProducto.forEach((r, index) => {
+              const tr = document.createElement('tr');
+              tr.className = groupClass;
+
+              // Primer fila de la app: rowspan para App y Developer
+              if (appRowStart) {
+                const tdApp = document.createElement('td');
+                tdApp.rowSpan = totalFilasApp;
+                tdApp.textContent = r.App;
+                tr.appendChild(tdApp);
+
+                const tdDev = document.createElement('td');
+                tdDev.rowSpan = totalFilasApp;
+                tdDev.textContent = r.Developer;
+                tr.appendChild(tdDev);
+
+                appRowStart = false;
+              }
+
+              // Primera fila de este producto: rowspan para APIProduct
+              if (index === 0) {
+                const tdProd = document.createElement('td');
+                tdProd.rowSpan = filasProxy;
+                tdProd.textContent = r.APIProduct;
+                tr.appendChild(tdProd);
+              }
+
+              // Proxy, KVM, Target para cada fila
+              const tdProxy = document.createElement('td');
+              tdProxy.textContent = r.Proxy || '';
+              tr.appendChild(tdProxy);
+
+              const tdKVM = document.createElement('td');
+              tdKVM.textContent = r.KVM || '';
+              tr.appendChild(tdKVM);
+
+              const tdTarget = document.createElement('td');
+              tdTarget.textContent = r.Target || '';
+              tr.appendChild(tdTarget);
+
+              tbody.appendChild(tr);
             });
-            tbody.appendChild(tr);
           });
         });
       }
