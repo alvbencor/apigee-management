@@ -12,7 +12,24 @@
       background-color: #3e5248;
       color: beige;
     }
-    h1 { font-family: sans-serif; color: beige; }
+    h1, h2, h3 {
+      font-family: sans-serif;
+      color: beige;
+      margin: 0;
+    }
+
+    /* Contenedor del encabezado */
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+    }
+    #stats {
+      font-size: 0.8rem;
+      color: #fbf3a3;
+    }
+
     /* Zona de carga */
     .file-loading { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
     .dropzone {
@@ -28,32 +45,133 @@
     }
     .dropzone.hover { background-color: #52675b; }
     .url-group { display: flex; flex-direction: column; gap: 0.5rem; }
-    .url-group input, .url-group button { height: 2.5rem; padding: 0 0.5rem; border: none; border-radius: 4px; font-family: monospace; }
+    .url-group input, .url-group button {
+      height: 2.5rem;
+      padding: 0 0.5rem;
+      border: none;
+      border-radius: 4px;
+      font-family: monospace;
+    }
     .url-group input { background: #52675b; color: beige; width: 17rem; }
     .url-group button { background: #85ecb2; color: #3c3f3f; cursor: pointer; }
+
     /* Oculto inicialmente excepto zona de carga */
-    #stats, .loaded-message, .search-filter, #filterToggle, #filterOptions, #actionsGroup, #resultCount, .table-container {
+    #stats,
+    .loaded-message,
+    .search-filter,
+    #filterToggle,
+    #filterOptions,
+    #actionsContainer,
+    .table-container {
       display: none;
     }
-    #stats, #resultCount { margin: 1rem 0; font-size: 1rem; }
-    .search-filter { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
-    #searchGroup input { width: 100%; max-width: 30rem; padding: 0.5rem; border: none; border-radius: 4px; background: #52675b; color: beige; }
-    #search{display: none;}
-    .filter-toggle { cursor: pointer; font-family: monospace; }
-    .filter-toggle span { user-select: none; color: #fbf3a3; }
-    #filterOptions { margin: 1rem 0; font-family: monospace; }
-    #filterOptions .radios, #filterOptions .checkboxes { margin: 0.5rem 0; }
-    #filterOptions label { margin-right: 1rem; }
+    #resultCount {
+      font-size: 0.8rem;
+      color: #fbf3a3;
+      margin-left: 1rem;
+      white-space: nowrap;
+    }
+    .search-filter {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    #searchGroup input {
+      width: 100%;
+      max-width: 30rem;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      background: #52675b;
+      color: beige;
+    }
+    #search { display: none; }
+    .filter-toggle {
+      cursor: pointer;
+      font-family: monospace;
+    }
+    .filter-toggle span {
+      user-select: none;
+      color: #fbf3a3;
+    }
+    /* Contenedor flex para los fieldsets */
+    #filterOptions {
+      margin: 1rem 0;
+      font-family: monospace;
+      display: flex;
+      gap: 1rem;
+      /* Mantener oculto hasta toggle */
+      display: none;
+    }
+    fieldset {
+      border: 1px solid #afe2b1;
+      padding: 1rem;
+      flex: 1; /* Cada fieldset ocupa la misma fracción del contenedor */
+    }
+    legend {
+      color: #fbf3a3;
+      font-weight: bold;
+    }
+    #filterOptions .radios,
+    #filterOptions .checkboxes {
+      margin-top: 0.5rem;
+    }
+    #filterOptions label {
+      margin-right: 1rem;
+    }
     #loadedName { color: #85ecb2; }
     #loadedMessage { color: #5d9c79; }
-    .actions { display: flex; gap: 1rem; margin: 1rem 0; }
-    .actions button { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; }
-    .copy-btn { background-color: #fbf3a3; color: #3c3f3f; }
-    .export-btn { background-color: #abfbb0; color: #3c3f3f; }
-    #toggleArrow{margin-left: 1rem;}
+    .actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .actions button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background-color: #fbf3a3;
+      color: #3c3f3f;
+    }
+    .export-btn {
+      background-color: #abfbb0;
+      color: #3c3f3f;
+    }
+    #toggleArrow {
+      margin-left: 1rem;
+    }
+
+    /* Botones “Seleccionar todos” / “Deseleccionar todos” al estilo del toggle */
+    .filter-button {
+      font-family: monospace;
+      font-size: 0.95rem;
+      background: none;
+      border: none;
+      color: #fbf3a3;
+      cursor: pointer;
+      margin-right: 1rem;
+      padding: 0.2rem 0.6rem;
+    }
+    .filter-button:hover {
+      color: #ffffff;
+    }
+
     /* Tabla */
-    .table-container { max-width: 80vw; margin: 0 auto 2rem; overflow: auto; max-height: calc(100vh - 20rem); }
-    table { table-layout: fixed; width: 100%; border-collapse: collapse; }
+    .table-container {
+      max-width: 80vw;
+      margin: 0 auto 2rem;
+      overflow: auto;
+      max-height: calc(100vh - 20rem);
+    }
+    table {
+      table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+    }
     th, td {
       border: 1px solid #ccc;
       padding: 0.3rem;
@@ -63,6 +181,7 @@
       word-wrap: break-word;
       word-break: break-all;
       overflow: hidden;
+      position: relative;
     }
     th {
       background-color: #afe2b1;
@@ -70,12 +189,30 @@
       position: sticky;
       top: 0;
       z-index: 2;
+      cursor: pointer;
     }
-    tr:nth-child(even) { background-color: #52675b; }
+    tr:nth-child(even) {
+      background-color: #52675b;
+    }
+
+    /* Input en cabecera */
+    .column-search-input {
+      width: 90%;
+      padding: 0.3rem;
+      border: 1px solid #3c3f3f;
+      border-radius: 4px;
+      background: #52675b;
+      color: beige;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
-  <h1>Inventario de APIs</h1>
+  <div class="header-container">
+    <h1>Inventario de APIs</h1>
+    <div id="stats"></div>
+  </div>
+
   <!-- Zona de carga inicial -->
   <div class="file-loading" id="fileLoading">
     <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
@@ -84,35 +221,55 @@
       <button id="loadUrlBtn">Cargar inventario</button>
     </div>
   </div>
-  <div id="stats"></div>
   <div class="loaded-message" id="loadedMessage">✓ Archivo cargado: <span id="loadedName"></span></div>
   <input type="file" id="fileInput" accept=".csv" style="display:none">
+
   <!-- Búsqueda y filtros -->
   <div class="search-filter">
     <div id="searchGroup"><input id="search" type="text" placeholder="Escribe para filtrar..."></div>
-    <div class="filter-toggle" id="filterToggle"><span id="toggleArrow">▸</span> <span id="toggleText">Mostrar filtros</span></div>
+    <div class="filter-toggle" id="filterToggle">
+      <span id="toggleArrow">▸</span>
+      <span id="toggleText">Mostrar filtros</span>
+    </div>
   </div>
+
   <div id="filterOptions">
-    <div class="radios">
-      <label><input type="radio" name="mode" value="all" checked> Todo</label>
-      <label><input type="radio" name="mode" value="prodSinApp"> Sólo productos sin app</label>
-      <label><input type="radio" name="mode" value="proxySinProd"> Sólo proxies sin producto</label>
-    </div>
-    <div class="checkboxes">
-      <label><input type="checkbox" id="chkApp" checked /> Apps</label>
-      <label><input type="checkbox" id="chkDev" checked /> Developers</label>
-      <label><input type="checkbox" id="chkProd" checked /> Productos</label>
-      <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
-      <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
-      <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
-    </div>
+    <fieldset>
+      <legend>Filtrado por producto</legend>
+      <div class="radios">
+        <label><input type="radio" name="mode" value="all" checked> Todo</label>
+        <label><input type="radio" name="mode" value="prodSinApp"> Sólo productos sin app</label>
+        <label><input type="radio" name="mode" value="proxySinProd"> Sólo proxies sin producto</label>
+        <label><input type="radio" name="mode" value="productosHuerfanos"> Productos huérfanos</label>
+        <label><input type="radio" name="mode" value="productosDescartables"> Productos descartables</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Filtrado por campo</legend>
+      <div class="checkboxes">
+        <button id="btnSelectAll" class="filter-button">Seleccionar todos</button>
+        <button id="btnDeselectAll" class="filter-button">Deseleccionar todos</button>
+        <br><br>
+        <label><input type="checkbox" id="chkApp" checked /> Apps</label>
+        <label><input type="checkbox" id="chkDev" checked /> Developers</label>
+        <label><input type="checkbox" id="chkProd" checked /> Productos</label>
+        <label><input type="checkbox" id="chkProxy" checked /> Proxies</label>
+        <label><input type="checkbox" id="chkKVM" checked /> KVM</label>
+        <label><input type="checkbox" id="chkTarget" checked /> Targets</label>
+      </div>
+    </fieldset>
   </div>
-  <!-- Acciones -->
-  <div id="actionsGroup" class="actions">
-    <button class="copy-btn" id="copyBtn">Copiar tabla</button>
-    <button class="export-btn" id="exportBtn">Exportar a CSV</button>
+
+  <!-- Acciones y conteo de resultados -->
+  <div id="actionsContainer" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div id="actionsGroup" class="actions">
+      <button class="copy-btn" id="copyBtn">Copiar tabla</button>
+      <button class="export-btn" id="exportBtn">Exportar a CSV</button>
+    </div>
+    <div id="resultCount"></div>
   </div>
-  <div id="resultCount">Total resultados: <span id="countNumber">0</span></div>
+
   <!-- Tabla -->
   <div class="table-container">
     <table id="inventoryTable">
@@ -120,9 +277,15 @@
       <tbody></tbody>
     </table>
   </div>
+
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
     let data = [], filtered = [], isDefault = false;
+
+    // Para almacenar filtros por columna
+    const columnFilters = {};
+
+    // Referencias a elementos
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const urlInput = document.getElementById('urlInput');
@@ -137,15 +300,44 @@
     const toggleArrow = document.getElementById('toggleArrow');
     const toggleText = document.getElementById('toggleText');
     const filterOptions = document.getElementById('filterOptions');
+    const actionsContainer = document.getElementById('actionsContainer');
     const actionsGroup = document.getElementById('actionsGroup');
     const resultCountDiv = document.getElementById('resultCount');
-    const countNumber = document.getElementById('countNumber');
     const headerRow = document.getElementById('headerRow');
-    const search = document.getElementById('search');
 
-    // Eventos zona de carga
-    ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('hover'); }));
-    ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('hover'); }));
+    // Mapeo columna → id del checkbox
+    const columnToCheckboxId = {
+      "App": "chkApp",
+      "Developer": "chkDev",
+      "APIProduct": "chkProd",
+      "Proxy": "chkProxy",
+      "KVM": "chkKVM",
+      "Target": "chkTarget"
+    };
+
+    // Radios y checkboxes por defecto
+    function resetRadiosAndCheckboxes() {
+      // Radio a “all”
+      document.querySelector('input[name="mode"][value="all"]').checked = true;
+      // Todos los checkboxes seleccionados
+      ['chkApp','chkDev','chkProd','chkProxy','chkKVM','chkTarget'].forEach(id => {
+        document.getElementById(id).checked = true;
+      });
+    }
+
+    // Eventos de arrastrar / soltar y clic para cargar archivo
+    ['dragenter','dragover'].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.add('hover');
+      });
+    });
+    ['dragleave','drop'].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.remove('hover');
+      });
+    });
     dropzone.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
     dropzone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
@@ -157,36 +349,71 @@
         .catch(err => alert('Error: ' + err));
     });
 
-    // Toggle filtros
+    // Toggle “Mostrar filtros” / “Ocultar filtros”
     filterToggle.addEventListener('click', () => {
-      const open = filterOptions.style.display === 'block';
-      filterOptions.style.display = open ? 'none' : 'block';
-      toggleArrow.textContent = open ? '▸' : '▾';
-      toggleText.textContent = open ? 'Mostrar filtros' : 'Ocultar filtros';
+      const abierto = filterOptions.style.display === 'flex';
+      if (abierto) {
+        // Se ocultan: resetear radios y checkboxes
+        resetRadiosAndCheckboxes();
+        applyFilters();
+      }
+      filterOptions.style.display = abierto ? 'none' : 'flex';
+      toggleArrow.textContent = abierto ? '▸' : '▾';
+      toggleText.textContent = abierto ? 'Mostrar filtros' : 'Ocultar filtros';
     });
 
     function handleFile(file, nameOverride) {
       const name = nameOverride || file.name;
       isDefault = name.includes('-default');
+
+      // Ocultar zona de carga y mostrar elementos principales
       fileLoading.style.display = 'none';
       loadedMessage.style.display = 'block';
-      search.style.display = 'block';
+      searchInput.style.display = 'block';
       loadedName.textContent = name;
       statsDiv.style.display = isDefault ? 'none' : 'block';
       searchFilter.style.display = isDefault ? 'none' : 'flex';
       filterToggle.style.display = isDefault ? 'none' : 'block';
+
+      // Forzar filtros ocultos y resetear valores al cargar
       filterOptions.style.display = 'none';
-      actionsGroup.style.display = isDefault ? 'none' : 'flex';
-      resultCountDiv.style.display = isDefault ? 'none' : 'block';
+      toggleArrow.textContent = '▸';
+      toggleText.textContent = 'Mostrar filtros';
+      resetRadiosAndCheckboxes();
+
+      actionsContainer.style.display = isDefault ? 'none' : 'flex';
       document.querySelector('.table-container').style.display = 'block';
-      const headers = isDefault ? ['Producto','Apps','Proxies','Descartable','Razón'] : ['App','Developer','APIProduct','Proxy','KVM','Target'];
+
+      // Definir cabeceras según si es “-default” o no
+      const headers = isDefault
+        ? ['Producto','Apps','Proxies','Descartable','Razón']
+        : ['App','Developer','APIProduct','Proxy','KVM','Target'];
+
       setupHeader(headers);
-      Papa.parse(file, { header: true, delimiter: ';', skipEmptyLines: true, complete: res => { data = res.data; init(); }});
+      Papa.parse(file, {
+        header: true,
+        delimiter: ';',
+        skipEmptyLines: true,
+        complete: res => {
+          data = res.data;
+          init();
+        }
+      });
     }
 
     function setupHeader(cols) {
       headerRow.innerHTML = '';
-      cols.forEach(c => { const th = document.createElement('th'); th.textContent = c; headerRow.appendChild(th); });
+      cols.forEach(col => {
+        columnFilters[col] = "";
+      });
+      cols.forEach(c => {
+        const th = document.createElement('th');
+        th.textContent = c;
+        headerRow.appendChild(th);
+        if (!isDefault) {
+          th.addEventListener('click', () => activateColumnSearch(c, th));
+        }
+      });
     }
 
     function init() {
@@ -194,45 +421,225 @@
         const apps = new Set(data.map(r => r.App).filter(x => x)).size;
         const prods = new Set(data.map(r => r.APIProduct).filter(x => x)).size;
         const prox = new Set(data.map(r => r.Proxy).filter(x => x)).size;
-        statsDiv.textContent = `Apps: ${apps} | Productos: ${prods} | Proxies: ${prox}`;
+        statsDiv.textContent = `${apps} ${apps === 1 ? 'app' : 'apps'} | ${prods} ${prods === 1 ? 'producto' : 'productos'} | ${prox} ${prox === 1 ? 'proxy' : 'proxies'}`;
       }
       attachEvents();
       applyFilters();
     }
 
     function attachEvents() {
-      searchInput.addEventListener('input', applyFilters);
-      filterOptions.querySelectorAll('input[name=\"mode\"]').forEach(rb => rb.addEventListener('change', applyFilters));
-      filterOptions.querySelectorAll('input[type=\"checkbox\"]').forEach(cb => cb.addEventListener('change', applyFilters));
+      // Búsqueda global
+      searchInput.addEventListener('input', () => {
+        if (!isAnyColumnFilterActive()) {
+          applyFilters();
+        }
+      });
+
+      // Cambio de modo (radios)
+      filterOptions.querySelectorAll('input[name="mode"]').forEach(rb => {
+        rb.addEventListener('change', () => {
+          resetColumnFiltersUI();
+          applyFilters();
+        });
+      });
+
+      // Checkboxes de columnas
+      ['chkApp','chkDev','chkProd','chkProxy','chkKVM','chkTarget'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+          resetColumnFiltersUI();
+          applyFilters();
+        });
+      });
+
+      // Botones “Seleccionar todos” / “Deseleccionar todos”
+      document.getElementById('btnSelectAll').addEventListener('click', () => {
+        ['chkApp','chkDev','chkProd','chkProxy','chkKVM','chkTarget'].forEach(id => {
+          document.getElementById(id).checked = true;
+        });
+        resetColumnFiltersUI();
+        applyFilters();
+      });
+      document.getElementById('btnDeselectAll').addEventListener('click', () => {
+        ['chkApp','chkDev','chkProd','chkProxy','chkKVM','chkTarget'].forEach(id => {
+          document.getElementById(id).checked = false;
+        });
+        resetColumnFiltersUI();
+        applyFilters();
+      });
+    }
+
+    /** Comprueba si hay algún filtro por columna activo */
+    function isAnyColumnFilterActive() {
+      return Object.values(columnFilters).some(term => term && term.trim().length > 0);
+    }
+
+    /** Restablece todas las cabeceras quitando inputs y borrando columnFilters */
+    function resetColumnFiltersUI() {
+      for (const key in columnFilters) {
+        columnFilters[key] = "";
+      }
+      Array.from(headerRow.children).forEach(th => {
+        const colName = th.getAttribute('data-column-name');
+        if (colName) {
+          th.innerHTML = colName;
+        }
+      });
+    }
+
+    function activateColumnSearch(columnName, thElement) {
+      // Marcar checkbox correspondiente
+      const checkboxId = columnToCheckboxId[columnName];
+      if (checkboxId) {
+        const cb = document.getElementById(checkboxId);
+        if (cb && !cb.checked) cb.checked = true;
+      }
+
+      // Si ya hay un input, no hacemos nada
+      if (thElement.querySelector('input')) return;
+
+      // Guardar nombre original en data-attribute y crear input
+      thElement.setAttribute('data-column-name', columnName);
+      thElement.innerHTML = '';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'column-search-input';
+      input.placeholder = `Buscar en ${columnName}...`;
+      thElement.appendChild(input);
+      input.focus();
+
+      // Al escribir, guardamos filtro y aplicamos
+      input.addEventListener('input', () => {
+        columnFilters[columnName] = input.value.toLowerCase();
+        applyFilters();
+      });
+
+      // Al perder foco, restauramos el th y limpiamos filtro
+      input.addEventListener('blur', () => {
+        columnFilters[columnName] = '';
+        thElement.innerHTML = columnName;
+        applyFilters();
+      });
     }
 
     function applyFilters() {
-      const mode = document.querySelector('input[name=\"mode\"]:checked').value;
-      let temp = data.filter(r => {
-        if (mode === 'prodSinApp') return !(r.App||'').trim() && (r.APIProduct||'').trim();
-        if (mode === 'proxySinProd') return !(r.APIProduct||'').trim() && (r.Proxy||'').trim();
-        return true;
-      });
-      const term = (searchInput.value||'').toLowerCase();
-      const cols = [];
-      document.getElementById('chkApp').checked && cols.push('App');
-      document.getElementById('chkDev').checked && cols.push('Developer');
-      document.getElementById('chkProd').checked && cols.push('APIProduct');
-      document.getElementById('chkProxy').checked && cols.push('Proxy');
-      document.getElementById('chkKVM').checked && cols.push('KVM');
-      document.getElementById('chkTarget').checked && cols.push('Target');
-      filtered = temp.filter(r => cols.some(c => (r[c]||'').toLowerCase().includes(term)));
-      countNumber.textContent = filtered.length;
+      const mode = document.querySelector('input[name="mode"]:checked').value;
+
+      if (mode === 'productosHuerfanos') {
+        // --- Lógica “Productos huérfanos”: sólo productos sin proxy ---
+        const productToProxies = {};
+        data.forEach(row => {
+          const prod = (row.APIProduct || '').trim();
+          const prox = (row.Proxy || '').trim();
+          if (!prod) return;
+          if (!productToProxies[prod]) productToProxies[prod] = new Set();
+          if (prox) productToProxies[prod].add(prox);
+        });
+
+        const orphanProducts = new Set();
+        Object.keys(productToProxies).forEach(prod => {
+          if (productToProxies[prod].size === 0) {
+            orphanProducts.add(prod);
+          }
+        });
+
+        filtered = data.filter(r => orphanProducts.has((r.APIProduct || '').trim()));
+
+      } else if (mode === 'productosDescartables') {
+        // --- Lógica “Productos descartables”:
+        //     - APIProduct termina en "_default"
+        //     - No está asociado a ninguna App (App vacío)
+        //     - Su proxy coincide con nombre sin "_default"
+        filtered = data.filter(r => {
+          const prod = (r.APIProduct || '').trim();
+          const prox = (r.Proxy || '').trim();
+          const app  = (r.App || '').trim();
+          if (app === '' && prod.endsWith('_default')) {
+            const base = prod.slice(0, prod.length - '_default'.length);
+            return prox === base;
+          }
+          return false;
+        });
+
+      } else if (isAnyColumnFilterActive()) {
+        // --- Búsqueda por columna ---
+        filtered = data.filter(row => {
+          for (const col in columnFilters) {
+            const term = columnFilters[col];
+            if (term && term.trim().length > 0) {
+              const cellVal = (row[col] || '').toLowerCase();
+              if (!cellVal.includes(term)) {
+                return false;
+              }
+            }
+          }
+          // Respetar “prodSinApp” / “proxySinProd”
+          if (mode === 'prodSinApp') {
+            if ((row.App || '').trim() || !(row.APIProduct || '').trim()) return false;
+          } else if (mode === 'proxySinProd') {
+            if ((row.APIProduct || '').trim() || !(row.Proxy || '').trim()) return false;
+          }
+          return true;
+        });
+
+      } else {
+        // --- Modo normal (radios + búsqueda global + checkboxes) ---
+        let temp = data.slice();
+        if (mode === 'prodSinApp') {
+          temp = temp.filter(r => !(r.App||'').trim() && (r.APIProduct||'').trim());
+        } else if (mode === 'proxySinProd') {
+          temp = temp.filter(r => !(r.APIProduct||'').trim() && (r.Proxy||'').trim());
+        }
+        const term = (searchInput.value || '').toLowerCase();
+        const cols = [];
+        document.getElementById('chkApp').checked   && cols.push('App');
+        document.getElementById('chkDev').checked   && cols.push('Developer');
+        document.getElementById('chkProd').checked  && cols.push('APIProduct');
+        document.getElementById('chkProxy').checked && cols.push('Proxy');
+        document.getElementById('chkKVM').checked   && cols.push('KVM');
+        document.getElementById('chkTarget').checked&& cols.push('Target');
+        if (term) {
+          filtered = temp.filter(r => cols.some(c => (r[c] || '').toLowerCase().includes(term)));
+        } else {
+          filtered = temp.slice();
+        }
+      }
+
+      // --- Mostrar conteos con singular/plural ---
+      const counts = [];
+      const countApps = filtered.reduce((acc, fila) => {
+        return acc + ((fila['App'] || '').trim().length > 0 ? 1 : 0);
+      }, 0);
+      if (countApps > 0) counts.push(`${countApps} ${countApps === 1 ? 'app' : 'apps'}`);
+
+      const countProds = filtered.reduce((acc, fila) => {
+        return acc + ((fila['APIProduct'] || '').trim().length > 0 ? 1 : 0);
+      }, 0);
+      if (countProds > 0) counts.push(`${countProds} ${countProds === 1 ? 'producto' : 'productos'}`);
+
+      const countProxies = filtered.reduce((acc, fila) => {
+        return acc + ((fila['Proxy'] || '').trim().length > 0 ? 1 : 0);
+      }, 0);
+      if (countProxies > 0) counts.push(`${countProxies} ${countProxies === 1 ? 'proxy' : 'proxies'}`);
+
+      if (counts.length > 0) {
+        resultCountDiv.textContent = `Resultado de búsqueda: ${counts.join(', ')}`;
+      } else {
+        resultCountDiv.textContent = '';
+      }
+
       renderTable();
     }
 
     function renderTable() {
-      const tbody = document.querySelector('#inventoryTable tbody'); tbody.innerHTML = '';
+      const tbody = document.querySelector('#inventoryTable tbody');
+      tbody.innerHTML = '';
       if (isDefault) {
         filtered.forEach(r => {
           const tr = document.createElement('tr');
           ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
-            const td = document.createElement('td'); td.textContent = r[c]||''; tr.appendChild(td);
+            const td = document.createElement('td');
+            td.textContent = r[c] || '';
+            tr.appendChild(td);
           });
           tbody.appendChild(tr);
         });
@@ -244,11 +651,17 @@
             const tr = document.createElement('tr');
             if (first) {
               ['App','Developer'].forEach(c => {
-                const td = document.createElement('td'); td.rowSpan = rows.length; td.textContent = r[c]||''; tr.appendChild(td);
-              }); first = false;
+                const td = document.createElement('td');
+                td.rowSpan = rows.length;
+                td.textContent = r[c] || '';
+                tr.appendChild(td);
+              });
+              first = false;
             }
             ['APIProduct','Proxy','KVM','Target'].forEach(c => {
-              const td = document.createElement('td'); td.textContent = r[c]||''; tr.appendChild(td);
+              const td = document.createElement('td');
+              td.textContent = r[c] || '';
+              tr.appendChild(td);
             });
             tbody.appendChild(tr);
           });
@@ -257,13 +670,21 @@
     }
 
     function copySetup() {
-      const btn = document.getElementById('copyBtn'); btn.onclick = async () => {
+      const btn = document.getElementById('copyBtn');
+      btn.onclick = async () => {
         const tbl = document.getElementById('inventoryTable');
         const html = tbl.outerHTML;
         let text = '';
-        tbl.querySelectorAll('tr').forEach(row => { text += Array.from(row.children).map(td => td.innerText).join('\t') + '\n'; });
+        tbl.querySelectorAll('tr').forEach(row => {
+          text += Array.from(row.children).map(td => td.innerText).join('\t') + '\n';
+        });
         try {
-          await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([text], { type: 'text/plain' }) })]);
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'text/html': new Blob([html], { type: 'text/html' }),
+              'text/plain': new Blob([text], { type: 'text/plain' })
+            })
+          ]);
           alert('Tabla copiada con formato');
         } catch {
           navigator.clipboard.writeText(text).then(() => alert('Tabla copiada como texto'));
@@ -272,17 +693,22 @@
     }
 
     function exportSetup() {
-      const btn = document.getElementById('exportBtn'); btn.onclick = () => {
-        const hdr = isDefault ? ['Producto','Apps','Proxies','Descartable','Razón'] : ['App','Developer','APIProduct','Proxy','KVM','Target'];
-        const rows = filtered.map(r => hdr.map(c => r[c]||''));
+      const btn = document.getElementById('exportBtn');
+      btn.onclick = () => {
+        const hdr = isDefault
+          ? ['Producto','Apps','Proxies','Descartable','Razón']
+          : ['App','Developer','APIProduct','Proxy','KVM','Target'];
+        const rows = filtered.map(r => hdr.map(c => r[c] || ''));
         const csv = [hdr, ...rows].map(a => a.join(';')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
-        const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
-        link.download = isDefault ? 'productos_default.csv' : 'inventario.csv'; link.click();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = isDefault ? 'productos_default.csv' : 'inventario.csv';
+        link.click();
       };
     }
 
-    // Inicializar copia y export al cargar el script
+    // Inicializar copiar y exportar
     copySetup();
     exportSetup();
   </script>
