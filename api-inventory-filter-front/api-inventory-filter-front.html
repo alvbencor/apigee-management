@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inventario de APIs</title>
   <style>
     body {
@@ -12,25 +12,40 @@
       background-color: #3e5248;
       color: beige;
     }
-    h1, h2, h3 {
-      font-family: sans-serif;
+    h1 {
+      font-family: monospace;
       color: beige;
       margin: 0;
     }
 
-    /* Contenedor del encabezado */
+    /* ---------------------
+       Encabezado principal
+       --------------------- */
     .header-container {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: flex-start;
       margin-bottom: 1rem;
     }
-    #stats {
+    .header-container .info {
+      text-align: right;
       font-size: 0.8rem;
       color: #fbf3a3;
+      line-height: 1.4;
+    }
+    .header-container .info .stats {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .header-container .info .loaded {
+      display: none;
+      color: #5d9c79;
+      font-size: 0.8rem;
     }
 
-    /* Zona de carga */
+    /* ---------------------
+       Zona de carga inicial
+       --------------------- */
     .file-loading {
       display: flex;
       gap: 1rem;
@@ -75,27 +90,33 @@
       cursor: pointer;
     }
 
-    /* Ocultar inicialmente todos menos zona de carga */
+    /* --------------------------------------------
+       Ocultar inicialmente ciertos bloques hasta
+       que se cargue el CSV:
+       - stats, “Archivo cargado”
+       - buscador principal (#searchFilter)
+       - filtros (#filterOptions)
+       - acciones (#actionsContainer)
+       - tabla (#inventoryTable)
+       -------------------------------------------- */
     #stats,
-    .loaded-message,
-    .search-filter,
-    #filterToggle,
+    .loaded,
+    #searchFilter,
     #filterOptions,
     #actionsContainer,
     .table-container {
       display: none;
     }
-    #resultCount {
-      font-size: 0.8rem;
-      color: #fbf3a3;
-      margin-left: 1rem;
-      white-space: nowrap;
-    }
+
+    /* ---------------------------
+       Buscador principal + toggle
+       --------------------------- */
     .search-filter {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin: 1rem 0;
+      margin-right: 1rem;
     }
     #searchGroup input {
       width: 100%;
@@ -106,25 +127,38 @@
       background: #52675b;
       color: beige;
     }
+    /* El <input id="search"> estará en el DOM,
+       pero su contenedor (#searchFilter) se muestra
+       solo al cargar el CSV */
+    #search::placeholder {
+      font-family: monospace;
+      color:#b4b083
+    }
     #search {
-      display: none;
+      display: block;
+      margin-right: 1rem;
+      font-family: monospace;
+
     }
     .filter-toggle {
       cursor: pointer;
       font-family: monospace;
+      margin-left: 1rem;
     }
     .filter-toggle span {
       user-select: none;
       color: #fbf3a3;
     }
 
-    /* Contenedor flex para fieldsets */
+    /* ---------------------
+       Filtros (fieldsets)
+       --------------------- */
     #filterOptions {
       margin: 1rem 0;
       font-family: monospace;
       display: flex;
       gap: 1rem;
-      display: none; /* Oculto hasta toggle */
+      display: none; /* oculto hasta toggle */
     }
     fieldset {
       border: 1px solid #afe2b1;
@@ -142,51 +176,52 @@
     #filterOptions label {
       margin-right: 1rem;
     }
-    #loadedName {
-      color: #85ecb2;
+    #stats{color: #add372;}
+
+    /* -----------------------------------------------------
+       Contenedor de “resultado de búsqueda” + botones
+       -----------------------------------------------------
+       - display: none al cargar la página
+       - al cargar el CSV, #actionsContainer pasa a display:flex
+       ----------------------------------------------------- */
+    #actionsContainer {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
     }
-    #loadedMessage {
-      color: #5d9c79;
+    /* Primero: texto de resultados (izquierda) */
+    #resultCount {
+      font-size: 0.8rem;
+      color: #5d9c72
     }
-    .actions {
+    /* Segundo: grupo de botones (derecha) */
+    #buttonsGroup {
       display: flex;
       gap: 1rem;
     }
-    .actions button {
+    .copy-btn {
+      background-color: #fbf3a3;
+      color: #3c3f3f;
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-family: monospace;
     }
-    .copy-btn {
-      background-color: #fbf3a3;
-      color: #3c3f3f;
-    }
     .export-btn {
       background-color: #abfbb0;
       color: #3c3f3f;
-    }
-    #toggleArrow {
-      margin-left: 1rem;
-    }
-
-    /* Botones “Seleccionar todos” / “Deseleccionar todos” */
-    .filter-button {
-      font-family: monospace;
-      font-size: 0.95rem;
-      background: none;
+      padding: 0.5rem 1rem;
       border: none;
-      color: #fbf3a3;
+      border-radius: 4px;
       cursor: pointer;
-      margin-right: 1rem;
-      padding: 0.2rem 0.6rem;
-    }
-    .filter-button:hover {
-      color: #ffffff;
+      font-family: monospace;
     }
 
-    /* Tabla */
+    /* -------------
+       Tabla final
+       ------------- */
     .table-container {
       max-width: 80vw;
       margin: 0 auto 2rem;
@@ -217,15 +252,12 @@
       z-index: 2;
       cursor: pointer;
     }
-    /* Sombreado alterno por grupo de App */
     .group-even td {
       background-color: #52675b;
     }
     .group-odd td {
       background-color: #3d5a4f;
     }
-
-    /* Input en cabecera */
     .column-search-input {
       width: 90%;
       padding: 0.3rem;
@@ -238,12 +270,25 @@
   </style>
 </head>
 <body>
+  <!-- ================================
+       ENCABEZADO PRINCIPAL
+       ================================ -->
   <div class="header-container">
-    <h1>Inventario de APIs</h1>
-    <div id="stats"></div>
+    <div>
+      <h1>Inventario de APIs</h1>
+    </div>
+    <div class="info">
+      <!-- Aparecerá tras cargar CSV -->
+      <span id="stats" class="stats"></span>
+      <span id="loadedMessage" class="loaded">
+        Archivo cargado: <span id="loadedName"></span>
+      </span>
+    </div>
   </div>
 
-  <!-- Zona de carga inicial -->
+  <!-- ================================
+       ZONA DE CARGA INICIAL
+       ================================ -->
   <div class="file-loading" id="fileLoading">
     <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
     <div class="url-group" id="urlGroup">
@@ -251,13 +296,12 @@
       <button id="loadUrlBtn">Cargar inventario</button>
     </div>
   </div>
-  <div class="loaded-message" id="loadedMessage">
-    ✓ Archivo cargado: <span id="loadedName"></span>
-  </div>
   <input type="file" id="fileInput" accept=".csv" style="display: none;">
 
-  <!-- Búsqueda y filtros -->
-  <div class="search-filter">
+  <!-- ================================
+       BUSCADOR PRINCIPAL + TOGGLE
+       ================================ -->
+  <div class="search-filter" id="searchFilter">
     <div id="searchGroup">
       <input id="search" type="text" placeholder="Escribe para filtrar...">
     </div>
@@ -267,6 +311,9 @@
     </div>
   </div>
 
+  <!-- ================================
+       FILTROS (OCULTOS HASTA TOGGLE)
+       ================================ -->
   <div id="filterOptions">
     <fieldset>
       <legend>Filtrado por producto</legend>
@@ -295,16 +342,25 @@
     </fieldset>
   </div>
 
-  <!-- Acciones y conteo de resultados -->
-  <div id="actionsContainer" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-    <div id="actionsGroup" class="actions">
+  <!-- ==================================================
+       FILA DE “RESULTADO DE BÚSQUEDA” + BOTONES
+       ==================================================
+       (oculto hasta cargar el CSV)
+       ================================================== -->
+  <div id="actionsContainer">
+    <!-- 1) Texto de resultados, a la izquierda -->
+    <div id="resultCount"></div>
+
+    <!-- 2) Grupo de botones, a la derecha -->
+    <div id="buttonsGroup">
       <button class="copy-btn" id="copyBtn">Copiar tabla</button>
       <button class="export-btn" id="exportBtn">Exportar a CSV</button>
     </div>
-    <div id="resultCount"></div>
   </div>
 
-  <!-- Tabla -->
+  <!-- ================================
+       TABLA FINAL (oculta al inicio)
+       ================================ -->
   <div class="table-container">
     <table id="inventoryTable">
       <thead>
@@ -314,145 +370,178 @@
     </table>
   </div>
 
+  <!-- Papaparse (para parsear CSVs en el navegador) -->
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    // Datos globales
-    let data = [];            // Todas las filas parseadas
-    let filtered = [];        // Filas tras aplicar filtros
-    let isDefault = false;    // Indica si el archivo es "-default"
+    // ============================================
+    // VARIABLES GLOBALES
+    // ============================================
+    let data = [], filtered = [], isDefault = false;
 
-    // Mapa columna → ID de checkbox correspondiente
+    // Mapa de columna → ID de checkbox
     const columnToCheckboxId = {
-      "App": "chkApp",
-      "Developer": "chkDev",
-      "APIProduct": "chkProd",
-      "Proxy": "chkProxy",
-      "KVM": "chkKVM",
-      "Target": "chkTarget"
+      App: "chkApp",
+      Developer: "chkDev",
+      APIProduct: "chkProd",
+      Proxy: "chkProxy",
+      KVM: "chkKVM",
+      Target: "chkTarget"
     };
-
-    // Guarda texto de filtros por columna (cuando se abre input en TH)
     const columnFilters = {};
 
     // Referencias a elementos del DOM
-    const dropzone        = document.getElementById('dropzone');
-    const fileInput       = document.getElementById('fileInput');
-    const urlInput        = document.getElementById('urlInput');
-    const loadUrlBtn      = document.getElementById('loadUrlBtn');
-    const fileLoading     = document.getElementById('fileLoading');
-    const loadedMessage   = document.getElementById('loadedMessage');
-    const loadedName      = document.getElementById('loadedName');
-    const statsDiv        = document.getElementById('stats');
-    const searchInput     = document.getElementById('search');
-    const searchFilter    = document.querySelector('.search-filter');
-    const filterToggle    = document.getElementById('filterToggle');
-    const toggleArrow     = document.getElementById('toggleArrow');
-    const toggleText      = document.getElementById('toggleText');
-    const filterOptions   = document.getElementById('filterOptions');
-    const actionsContainer= document.getElementById('actionsContainer');
-    const resultCountDiv  = document.getElementById('resultCount');
-    const headerRow       = document.getElementById('headerRow');
+    const dropzone         = document.getElementById("dropzone");
+    const fileInput        = document.getElementById("fileInput");
+    const urlInput         = document.getElementById("urlInput");
+    const loadUrlBtn       = document.getElementById("loadUrlBtn");
+    const fileLoading      = document.getElementById("fileLoading");
+    const loadedMessage    = document.getElementById("loadedMessage");
+    const loadedName       = document.getElementById("loadedName");
+    const statsDiv         = document.getElementById("stats");
+    const searchFilter     = document.getElementById("searchFilter");
+    const searchInput      = document.getElementById("search");
+    const filterToggle     = document.getElementById("filterToggle");
+    const toggleArrow      = document.getElementById("toggleArrow");
+    const toggleText       = document.getElementById("toggleText");
+    const filterOptions    = document.getElementById("filterOptions");
+    const actionsContainer = document.getElementById("actionsContainer");
+    const resultCountDiv   = document.getElementById("resultCount");
+    const headerRow        = document.getElementById("headerRow");
 
-    // ------------------------------------------------------------
-    // Función para seleccionar “all” en radios y checkboxes
-    // ------------------------------------------------------------
+    // ============================================
+    // FUNCIONES AUXILIARES
+    // ============================================
+
+    // Restablece radio “all” y todos los checkboxes a checked
     function resetRadiosAndCheckboxes() {
-      // Poner radio “all”
       document.querySelector('input[name="mode"][value="all"]').checked = true;
-
-      // Seleccionar todos los checkboxes de columnas
-      ['chkApp', 'chkDev', 'chkProd', 'chkProxy', 'chkKVM', 'chkTarget']
-        .forEach(id => document.getElementById(id).checked = true);
+      [
+        "chkApp",
+        "chkDev",
+        "chkProd",
+        "chkProxy",
+        "chkKVM",
+        "chkTarget"
+      ].forEach(id => {
+        document.getElementById(id).checked = true;
+      });
     }
 
-    // ------------------------------------------------------------
-    // Evento Drag & Drop / File Input
-    // ------------------------------------------------------------
-    ['dragenter', 'dragover'].forEach(evt => {
-      dropzone.addEventListener(evt, e => {
-        e.preventDefault();
-        dropzone.classList.add('hover');
-      });
-    });
-    ['dragleave', 'drop'].forEach(evt => {
-      dropzone.addEventListener(evt, e => {
-        e.preventDefault();
-        dropzone.classList.remove('hover');
-      });
-    });
-    dropzone.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
-    dropzone.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+    // Comprueba si hay algún filtro por columna activo
+    function isAnyColumnFilterActive() {
+      return Object.values(columnFilters).some(
+        term => term && term.trim().length > 0
+      );
+    }
 
-    // ------------------------------------------------------------
-    // Cargar CSV desde URL (fetch + Blob)
-    // ------------------------------------------------------------
-    loadUrlBtn.addEventListener('click', () => {
+    // Restablece las cabeceras de columna quitando inputs y limpiando columnFilters
+    function resetColumnFiltersUI() {
+      for (const key in columnFilters) {
+        columnFilters[key] = "";
+      }
+      Array.from(headerRow.children).forEach(th => {
+        const colName = th.getAttribute("data-column-name");
+        if (colName) {
+          th.innerHTML = colName;
+        }
+      });
+    }
+
+    // ============================================
+    // EVENTOS “Drag & Drop” Y CARGA DE ARCHIVO
+    // ============================================
+
+    // Cambiar estilo al arrastrar archivo sobre la zona
+    ["dragenter", "dragover"].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.add("hover");
+      });
+    });
+    ["dragleave", "drop"].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.remove("hover");
+      });
+    });
+    dropzone.addEventListener("drop", e =>
+      handleFile(e.dataTransfer.files[0])
+    );
+    dropzone.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
+
+    // ============================================
+    // CARGAR CSV DESDE URL (fetch + Blob)
+    // ============================================
+    loadUrlBtn.addEventListener("click", () => {
       const url = urlInput.value.trim();
       if (!url) {
-        alert('Introduce una URL');
+        alert("Introduce una URL");
         return;
       }
       fetch(url)
         .then(res => res.text())
         .then(txt => {
-          // Convertir texto a Blob para Papaparse
-          handleFile(new Blob([txt], { type: 'text/csv' }), url);
+          handleFile(new Blob([txt], { type: "text/csv" }), url);
         })
-        .catch(err => alert('Error: ' + err));
+        .catch(err => alert("Error: " + err));
     });
 
-    // ------------------------------------------------------------
-    // Toggle “Mostrar filtros” / “Ocultar filtros”
-    // ------------------------------------------------------------
-    filterToggle.addEventListener('click', () => {
-      const abierto = filterOptions.style.display === 'flex';
+    // ============================================
+    // TOGGLE “Mostrar filtros” / “Ocultar filtros”
+    // ============================================
+    filterToggle.addEventListener("click", () => {
+      const abierto = filterOptions.style.display === "flex";
       if (abierto) {
-        // Al ocultar filtros, resetear valores
         resetRadiosAndCheckboxes();
         applyFilters();
       }
-      filterOptions.style.display = abierto ? 'none' : 'flex';
-      toggleArrow.textContent     = abierto ? '▸' : '▾';
-      toggleText.textContent      = abierto ? 'Mostrar filtros' : 'Ocultar filtros';
+      filterOptions.style.display = abierto ? "none" : "flex";
+      toggleArrow.textContent     = abierto ? "▸" : "▾";
+      toggleText.textContent      = abierto
+        ? "Mostrar filtros"
+        : "Ocultar filtros";
     });
 
-    // ------------------------------------------------------------
-    // Procesa archivo local o Blob de texto
-    // ------------------------------------------------------------
+    // ============================================
+    // FUNCION PRINCIPAL: MANEJO DE ARCHIVO CSV
+    // ============================================
     function handleFile(file, nameOverride) {
       const name = nameOverride || file.name;
-      isDefault = name.includes('-default');
+      isDefault = name.includes("-default");
 
-      // Ocultar zona de carga
-      fileLoading.style.display     = 'none';
-      loadedMessage.style.display   = 'block';
-      searchInput.style.display     = 'block';
-      loadedName.textContent        = name;
-      statsDiv.style.display        = isDefault ? 'none' : 'block';
-      searchFilter.style.display    = isDefault ? 'none' : 'flex';
-      filterToggle.style.display    = isDefault ? 'none' : 'block';
+      // 1) Ocultar “zona de carga”
+      fileLoading.style.display = "none";
 
-      // Ocultar filtros y resetear valores
-      filterOptions.style.display   = 'none';
-      toggleArrow.textContent       = '▸';
-      toggleText.textContent        = 'Mostrar filtros';
+      // 2) Mostrar buscador y acciones
+      searchFilter.style.display    = "flex";
+      actionsContainer.style.display = "flex";
+
+      // 3) Rellenar “stats” y “Archivo cargado”
+      loadedName.textContent      = name;
+      loadedMessage.style.display = "inline-block";
+      statsDiv.style.display      = isDefault ? "none" : "block";
+
+      // 4) Ocultar filtros, resetear valores y ocultar cabeceras de filtros
+      filterOptions.style.display = "none";
+      toggleArrow.textContent     = "▸";
+      toggleText.textContent      = "Mostrar filtros";
       resetRadiosAndCheckboxes();
 
-      actionsContainer.style.display= isDefault ? 'none' : 'flex';
-      document.querySelector('.table-container').style.display = 'block';
+      // 5) Mostrar tabla contenedor
+      document.querySelector(".table-container").style.display = "block";
 
-      // Definir cabeceras según “-default” o no
+      // 6) Definir cabeceras según modalidad “-default” o no
       const headers = isDefault
-        ? ['Producto', 'Apps', 'Proxies', 'Descartable', 'Razón']
-        : ['App', 'Developer', 'APIProduct', 'Proxy', 'KVM', 'Target'];
+        ? ["Producto", "Apps", "Proxies", "Descartable", "Razón"]
+        : ["App", "Developer", "APIProduct", "Proxy", "KVM", "Target"];
 
       setupHeader(headers);
 
-      // Parsear CSV con PapaParse
+      // 7) Parsear CSV con PapaParse
       Papa.parse(file, {
         header: true,
-        delimiter: ';',
+        delimiter: ";",
         skipEmptyLines: true,
         complete: res => {
           data = res.data;
@@ -461,185 +550,187 @@
       });
     }
 
-    // ------------------------------------------------------------
-    // Construye los <th> dinámicamente y prepara columnFilters
-    // ------------------------------------------------------------
+    // ============================================
+    // CONSTRUCCIÓN DINÁMICA DE ENCABEZADOS <th>
+    // ============================================
     function setupHeader(cols) {
-      headerRow.innerHTML = '';
+      headerRow.innerHTML = "";
       cols.forEach(col => {
         columnFilters[col] = "";
       });
       cols.forEach(c => {
-        const th = document.createElement('th');
+        const th = document.createElement("th");
         th.textContent = c;
         headerRow.appendChild(th);
         if (!isDefault) {
-          // Permitir buscar por columna haciendo clic en el <th>
-          th.addEventListener('click', () => activateColumnSearch(c, th));
+          // Permitir búsqueda por columna al hacer clic
+          th.addEventListener("click", () =>
+            activateColumnSearch(c, th)
+          );
         }
       });
     }
 
-    // ------------------------------------------------------------
-    // Inicialización: mostrar estadísticas y activar eventos
-    // ------------------------------------------------------------
+    // ============================================
+    // INICIALIZACIÓN: MUESTRA ESTADÍSTICAS Y EVENTOS
+    // ============================================
     function init() {
       if (!isDefault) {
-        // Contar Apps, Productos y Proxies únicos
         const apps  = new Set(data.map(r => r.App).filter(x => x)).size;
-        const prods = new Set(data.map(r => r.APIProduct).filter(x => x)).size;
-        const prox  = new Set(data.map(r => r.Proxy).filter(x => x)).size;
-        statsDiv.textContent = 
-          `${apps} ${apps === 1 ? 'app' : 'apps'} | ` +
-          `${prods} ${prods === 1 ? 'producto' : 'productos'} | ` +
-          `${prox} ${prox === 1 ? 'proxy' : 'proxies'}`;
+        const prods = new Set(
+          data.map(r => r.APIProduct).filter(x => x)
+        ).size;
+        const prox = new Set(data.map(r => r.Proxy).filter(x => x)).size;
+        statsDiv.textContent =
+          `${apps} ${apps === 1 ? "app" : "apps"} | ` +
+          `${prods} ${prods === 1 ? "producto" : "productos"} | ` +
+          `${prox} ${prox === 1 ? "proxy" : "proxies"}`;
       }
       attachEvents();
       applyFilters();
     }
 
-    // ------------------------------------------------------------
-    // Asignar listeners a buscadores, radios y checkboxes
-    // ------------------------------------------------------------
+    // ============================================
+    // ASIGNAR LISTENERS A: 
+    // - buscador principal
+    // - radios (filtrado por producto)
+    // - checkboxes (filtrado por campo)
+    // - botones “Seleccionar todos”/“Deseleccionar todos”
+    // ============================================
     function attachEvents() {
       // Búsqueda global
-      searchInput.addEventListener('input', () => {
+      searchInput.addEventListener("input", () => {
         if (!isAnyColumnFilterActive()) {
           applyFilters();
         }
       });
 
       // Radios “Filtrado por producto”
-      filterOptions.querySelectorAll('input[name="mode"]').forEach(rb => {
-        rb.addEventListener('change', () => {
-          resetColumnFiltersUI();
-          applyFilters();
-        });
-      });
-
-      // Checkboxes “Filtrado por campo”
-      ['chkApp', 'chkDev', 'chkProd', 'chkProxy', 'chkKVM', 'chkTarget']
-        .forEach(id => {
-          document.getElementById(id).addEventListener('change', () => {
+      filterOptions
+        .querySelectorAll('input[name="mode"]')
+        .forEach(rb => {
+          rb.addEventListener("change", () => {
             resetColumnFiltersUI();
             applyFilters();
           });
         });
 
-      // Botones “Seleccionar todos” / “Deseleccionar todos”
-      document.getElementById('btnSelectAll').addEventListener('click', () => {
-        ['chkApp', 'chkDev', 'chkProd', 'chkProxy', 'chkKVM', 'chkTarget']
-          .forEach(id => document.getElementById(id).checked = true);
-        resetColumnFiltersUI();
-        applyFilters();
-      });
-      document.getElementById('btnDeselectAll').addEventListener('click', () => {
-        ['chkApp', 'chkDev', 'chkProd', 'chkProxy', 'chkKVM', 'chkTarget']
-          .forEach(id => document.getElementById(id).checked = false);
-        resetColumnFiltersUI();
-        applyFilters();
-      });
-    }
-
-    // ------------------------------------------------------------
-    // Comprueba si hay algún filtro por columna activo
-    // ------------------------------------------------------------
-    function isAnyColumnFilterActive() {
-      return Object.values(columnFilters).some(term => term && term.trim().length > 0);
-    }
-
-    // ------------------------------------------------------------
-    // Restablecer inputs de cabecera y limpiar columnFilters
-    // ------------------------------------------------------------
-    function resetColumnFiltersUI() {
-      for (const key in columnFilters) {
-        columnFilters[key] = "";
-      }
-      Array.from(headerRow.children).forEach(th => {
-        const colName = th.getAttribute('data-column-name');
-        if (colName) {
-          th.innerHTML = colName;
+      // Checkboxes “Filtrado por campo”
+      ["chkApp", "chkDev", "chkProd", "chkProxy", "chkKVM", "chkTarget"].forEach(
+        id => {
+          document.getElementById(id).addEventListener("change", () => {
+            resetColumnFiltersUI();
+            applyFilters();
+          });
         }
-      });
+      );
+
+      // Botones “Seleccionar todos” / “Deseleccionar todos”
+      document
+        .getElementById("btnSelectAll")
+        .addEventListener("click", () => {
+          [
+            "chkApp",
+            "chkDev",
+            "chkProd",
+            "chkProxy",
+            "chkKVM",
+            "chkTarget"
+          ].forEach(id => {
+            document.getElementById(id).checked = true;
+          });
+          resetColumnFiltersUI();
+          applyFilters();
+        });
+      document
+        .getElementById("btnDeselectAll")
+        .addEventListener("click", () => {
+          [
+            "chkApp",
+            "chkDev",
+            "chkProd",
+            "chkProxy",
+            "chkKVM",
+            "chkTarget"
+          ].forEach(id => {
+            document.getElementById(id).checked = false;
+          });
+          resetColumnFiltersUI();
+          applyFilters();
+        });
     }
 
-    // ------------------------------------------------------------
-    // Al hacer clic en <th>, abrir input de búsqueda en esa columna
-    // ------------------------------------------------------------
+    // ============================================
+    // ABRIR INPUT DE BÚSQUEDA EN <th> CLICADO
+    // ============================================
     function activateColumnSearch(columnName, thElement) {
-      // 1) Cerrar cualquier input abierto en otras cabeceras
+      // 1) Cerrar inputs abiertos en otras cabeceras
       Array.from(headerRow.children).forEach(th => {
         if (th !== thElement) {
-          const almacen = th.getAttribute('data-column-name');
+          const almacen = th.getAttribute("data-column-name");
           if (almacen) {
             th.innerHTML = almacen;
           }
         }
       });
-      // Limpiar filtros de columna
-      for (const key in columnFilters) {
-        columnFilters[key] = "";
-      }
-      // Borrar contenido del buscador principal
+      // 2) Limpiar filtros de columna
+      for (const key in columnFilters) columnFilters[key] = "";
+      // 3) Borrar contenido de buscador principal
       searchInput.value = "";
 
-      // 2) Marcar el checkbox correspondiente a esta columna
+      // 4) Marcar checkbox correspondiente
       const checkboxId = columnToCheckboxId[columnName];
       if (checkboxId) {
         const cb = document.getElementById(checkboxId);
-        if (cb && !cb.checked) {
-          cb.checked = true;
-        }
+        if (cb && !cb.checked) cb.checked = true;
       }
 
-      // 3) Si ya hay un input abierto en esta cabecera, salir
-      if (thElement.querySelector('input')) {
-        return;
-      }
+      // 5) Si ya hay un input en esta cabecera, salir
+      if (thElement.querySelector("input")) return;
 
-      // 4) Guardar nombre en atributo y crear input
-      thElement.setAttribute('data-column-name', columnName);
-      thElement.innerHTML = '';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'column-search-input';
+      // 6) Guardar nombre y crear input
+      thElement.setAttribute("data-column-name", columnName);
+      thElement.innerHTML = "";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "column-search-input";
       input.placeholder = `Buscar en ${columnName}...`;
       thElement.appendChild(input);
       input.focus();
 
-      // 5) Al escribir, actualizar filter y filtrar
-      input.addEventListener('input', () => {
+      // 7) Al escribir, actualizar filtro y filtrar
+      input.addEventListener("input", () => {
         columnFilters[columnName] = input.value.toLowerCase();
         applyFilters();
       });
-
-      // 6) Al perder foco, restaurar cabecera y limpiar filtro
-      input.addEventListener('blur', () => {
-        columnFilters[columnName] = '';
+      // 8) Al perder foco, restaurar cabecera y limpiar filtro
+      input.addEventListener("blur", () => {
+        columnFilters[columnName] = "";
         thElement.innerHTML = columnName;
         applyFilters();
       });
     }
 
-    // ------------------------------------------------------------
-    // Aplicar filtros según modo, checkboxes y búsquedas
-    // ------------------------------------------------------------
+    // ============================================
+    // APLICAR FILTROS SEGÚN: 
+    // - modo (radios)
+    // - búsqueda por columna
+    // - búsqueda global + checkboxes
+    // ============================================
     function applyFilters() {
-      const mode = document.querySelector('input[name="mode"]:checked').value;
+      const mode = document.querySelector(
+        'input[name="mode"]:checked'
+      ).value;
 
-      if (mode === 'productosHuerfanos') {
+      if (mode === "productosHuerfanos") {
         // Productos sin ningún proxy
         const productToProxies = {};
         data.forEach(row => {
-          const prod = (row.APIProduct || '').trim();
-          const prox = (row.Proxy || '').trim();
+          const prod = (row.APIProduct || "").trim();
+          const prox = (row.Proxy || "").trim();
           if (!prod) return;
-          if (!productToProxies[prod]) {
-            productToProxies[prod] = new Set();
-          }
-          if (prox) {
-            productToProxies[prod].add(prox);
-          }
+          if (!productToProxies[prod]) productToProxies[prod] = new Set();
+          if (prox) productToProxies[prod].add(prox);
         });
         const orphanProducts = new Set();
         Object.keys(productToProxies).forEach(prod => {
@@ -647,115 +738,149 @@
             orphanProducts.add(prod);
           }
         });
-        filtered = data.filter(r => orphanProducts.has((r.APIProduct || '').trim()));
+        filtered = data.filter(r =>
+          orphanProducts.has((r.APIProduct || "").trim())
+        );
 
-      } else if (mode === 'productosDescartables') {
+      } else if (mode === "productosDescartables") {
         // Productos que acaban en "_default", sin App y proxy = nombre sin "_default"
         filtered = data.filter(r => {
-          const prod = (r.APIProduct || '').trim();
-          const prox = (r.Proxy || '').trim();
-          const app  = (r.App || '').trim();
-          if (app === '' && prod.endsWith('_default')) {
-            const base = prod.slice(0, prod.length - '_default'.length);
+          const prod = (r.APIProduct || "").trim();
+          const prox = (r.Proxy || "").trim();
+          const app = (r.App || "").trim();
+          if (app === "" && prod.endsWith("_default")) {
+            const base = prod.slice(0, prod.length - "_default".length);
             return prox === base;
           }
           return false;
         });
 
       } else if (isAnyColumnFilterActive()) {
-        // Búsqueda por columna + respetar modos prodSinApp / proxySinProd
+        // Búsqueda por columna + respetar “prodSinApp”/“proxySinProd”
         filtered = data.filter(row => {
           for (const col in columnFilters) {
             const term = columnFilters[col];
             if (term && term.trim().length > 0) {
-              const cellVal = (row[col] || '').toLowerCase();
-              if (!cellVal.includes(term)) {
-                return false;
-              }
+              const cellVal = (row[col] || "").toLowerCase();
+              if (!cellVal.includes(term)) return false;
             }
           }
-          if (mode === 'prodSinApp') {
-            if ((row.App || '').trim() || !(row.APIProduct || '').trim()) {
+          if (mode === "prodSinApp") {
+            if ((row.App || "").trim() || !(row.APIProduct || "").trim())
               return false;
-            }
-          } else if (mode === 'proxySinProd') {
-            if ((row.APIProduct || '').trim() || !(row.Proxy || '').trim()) {
+          } else if (mode === "proxySinProd") {
+            if ((row.APIProduct || "").trim() || !(row.Proxy || "").trim())
               return false;
-            }
           }
           return true;
         });
 
       } else {
-        // Modo normal: radios, búsqueda global y checkboxes de campo
+        // Modo normal: radios + búsqueda global + checkboxes
         let temp = data.slice();
-        if (mode === 'prodSinApp') {
-          temp = temp.filter(r => !(r.App || '').trim() && (r.APIProduct || '').trim());
-        } else if (mode === 'proxySinProd') {
-          temp = temp.filter(r => !(r.APIProduct || '').trim() && (r.Proxy || '').trim());
+        if (mode === "prodSinApp") {
+          temp = temp.filter(
+            r =>
+              !(r.App || "").trim() && (r.APIProduct || "").trim()
+          );
+        } else if (mode === "proxySinProd") {
+          temp = temp.filter(
+            r =>
+              !(r.APIProduct || "").trim() && (r.Proxy || "").trim()
+          );
         }
-        const term = (searchInput.value || '').toLowerCase();
+        const term = (searchInput.value || "").toLowerCase();
         const cols = [];
-        if (document.getElementById('chkApp').checked)    cols.push('App');
-        if (document.getElementById('chkDev').checked)    cols.push('Developer');
-        if (document.getElementById('chkProd').checked)   cols.push('APIProduct');
-        if (document.getElementById('chkProxy').checked)  cols.push('Proxy');
-        if (document.getElementById('chkKVM').checked)    cols.push('KVM');
-        if (document.getElementById('chkTarget').checked) cols.push('Target');
+        if (document.getElementById("chkApp").checked) cols.push("App");
+        if (document.getElementById("chkDev").checked) cols.push("Developer");
+        if (document.getElementById("chkProd").checked)
+          cols.push("APIProduct");
+        if (document.getElementById("chkProxy").checked)
+          cols.push("Proxy");
+        if (document.getElementById("chkKVM").checked) cols.push("KVM");
+        if (document.getElementById("chkTarget").checked)
+          cols.push("Target");
 
         if (term) {
           filtered = temp.filter(r =>
-            cols.some(c => (r[c] || '').toLowerCase().includes(term))
+            cols.some(c => (r[c] || "").toLowerCase().includes(term))
           );
         } else {
           filtered = temp.slice();
         }
       }
 
-      // Mostrar conteos con singular/plural
+      // ---------------------------
+      // Actualizar “Resultado de búsqueda”
+      // ---------------------------
       const counts = [];
-      const countApps = filtered.reduce((acc, fila) => {
-        return acc + ((fila.App || '').trim().length > 0 ? 1 : 0);
-      }, 0);
-      if (countApps > 0) counts.push(`${countApps} ${countApps === 1 ? 'app' : 'apps'}`);
 
-      const countProds = filtered.reduce((acc, fila) => {
-        return acc + ((fila.APIProduct || '').trim().length > 0 ? 1 : 0);
-      }, 0);
-      if (countProds > 0) counts.push(`${countProds} ${countProds === 1 ? 'producto' : 'productos'}`);
+    // 1) Conjunto de Apps únicas
+    const uniqueApps = new Set(
+      filtered
+        .map(r => (r.App || "").trim())
+        .filter(val => val.length > 0)
+    );
+    if (uniqueApps.size > 0) {
+      counts.push(
+        `${uniqueApps.size} ${uniqueApps.size === 1 ? "app" : "apps"}`
+      );
+    }
 
-      const countProxies = filtered.reduce((acc, fila) => {
-        return acc + ((fila.Proxy || '').trim().length > 0 ? 1 : 0);
-      }, 0);
-      if (countProxies > 0) counts.push(`${countProxies} ${countProxies === 1 ? 'proxy' : 'proxies'}`);
+    // 2) Conjunto de Productos únicos (APIProduct)
+    const uniqueProds = new Set(
+      filtered
+        .map(r => (r.APIProduct || "").trim())
+        .filter(val => val.length > 0)
+    );
+    if (uniqueProds.size > 0) {
+      counts.push(
+        `${uniqueProds.size} ${uniqueProds.size === 1 ? "producto" : "productos"}`
+      );
+    }
 
-      if (counts.length > 0) {
-        resultCountDiv.textContent = `Resultado de búsqueda: ${counts.join(', ')}`;
-      } else {
-        resultCountDiv.textContent = '';
-      }
+    // 3) Conjunto de Proxies únicas
+    const uniqueProxies = new Set(
+      filtered
+        .map(r => (r.Proxy || "").trim())
+        .filter(val => val.length > 0)
+    );
+    if (uniqueProxies.size > 0) {
+      counts.push(
+        `${uniqueProxies.size} ${
+          uniqueProxies.size === 1 ? "proxy" : "proxies"
+        }`
+      );
+    }
+
+    if (counts.length > 0) {
+      resultCountDiv.textContent = `Resultado de búsqueda: ${counts.join(", ")}`;
+    } else {
+      resultCountDiv.textContent = "";
+    }
 
       renderTable();
     }
 
-    // ------------------------------------------------------------
-    // Renderizar tabla con rowspan para App → Producto → Proxy
-    // ------------------------------------------------------------
+    // ============================================
+    // RENDERIZAR TABLA (agrupando App→Producto→Proxy)
+    // ============================================
     function renderTable() {
-      const tbody = document.querySelector('#inventoryTable tbody');
-      tbody.innerHTML = '';
+      const tbody = document.querySelector("#inventoryTable tbody");
+      tbody.innerHTML = "";
 
       if (isDefault) {
-        // Si “-default”, pintar fila a fila sin agrupación jerárquica
+        // Si CSV “-default”: pintar fila a fila
         filtered.forEach((r, idx) => {
-          const tr = document.createElement('tr');
-          tr.className = idx % 2 === 0 ? 'group-even' : 'group-odd';
-          ['Producto', 'Apps', 'Proxies', 'Descartable', 'Razón']
-            .forEach(c => {
-              const td = document.createElement('td');
-              td.textContent = r[c] || '';
+          const tr = document.createElement("tr");
+          tr.className = idx % 2 === 0 ? "group-even" : "group-odd";
+          ["Producto", "Apps", "Proxies", "Descartable", "Razón"].forEach(
+            c => {
+              const td = document.createElement("td");
+              td.textContent = r[c] || "";
               tr.appendChild(td);
-            });
+            }
+          );
           tbody.appendChild(tr);
         });
 
@@ -763,69 +888,76 @@
         // 1) Agrupar por App
         const appsUnicos = Array.from(new Set(filtered.map(r => r.App)));
         appsUnicos.forEach((app, appIdx) => {
-          const rowsPorApp    = filtered.filter(r => r.App === app);
+          const rowsPorApp = filtered.filter(r => r.App === app);
           const totalFilasApp = rowsPorApp.length;
-          const groupClass    = (appIdx % 2 === 0) ? 'group-even' : 'group-odd';
-          let appRowStart     = true;
+          const groupClass = appIdx % 2 === 0 ? "group-even" : "group-odd";
+          let appRowStart = true;
 
           // 2) Dentro de cada App, agrupar por Producto
-          const productos = Array.from(new Set(rowsPorApp.map(r => r.APIProduct)));
+          const productos = Array.from(
+            new Set(rowsPorApp.map(r => r.APIProduct))
+          );
           productos.forEach(prod => {
-            const rowsPorProducto = rowsPorApp.filter(r => r.APIProduct === prod);
-            const filasProducto   = rowsPorProducto.length;
+            const rowsPorProducto = rowsPorApp.filter(
+              r => r.APIProduct === prod
+            );
+            const filasProducto = rowsPorProducto.length;
 
-            // 3) Para cada fila de este producto, manejar rowspan de App / Producto / Proxy
+            // 3) Para cada fila de este producto, manejar rowspan App/Producto/Proxy
             rowsPorProducto.forEach((r, idxProducto) => {
-              const tr = document.createElement('tr');
+              const tr = document.createElement("tr");
               tr.className = groupClass;
 
-              // a) Primer fila de App: rowspan para App y Developer
+              // a) Primera fila de App: rowspan App y Developer
               if (appRowStart) {
-                const tdApp = document.createElement('td');
-                tdApp.rowSpan    = totalFilasApp;
+                const tdApp = document.createElement("td");
+                tdApp.rowSpan = totalFilasApp;
                 tdApp.textContent = r.App;
                 tr.appendChild(tdApp);
 
-                const tdDev = document.createElement('td');
-                tdDev.rowSpan     = totalFilasApp;
+                const tdDev = document.createElement("td");
+                tdDev.rowSpan = totalFilasApp;
                 tdDev.textContent = r.Developer;
                 tr.appendChild(tdDev);
 
                 appRowStart = false;
               }
 
-              // b) Primer fila de Producto: rowspan para APIProduct
+              // b) Primera fila de Producto: rowspan APIProduct
               if (idxProducto === 0) {
-                const tdProd = document.createElement('td');
-                tdProd.rowSpan     = filasProducto;
+                const tdProd = document.createElement("td");
+                tdProd.rowSpan = filasProducto;
                 tdProd.textContent = r.APIProduct;
                 tr.appendChild(tdProd);
               }
 
-              // c) Agrupar por Proxy: rowspan para cada bloque de KVM/Target
-              const proxyActual   = r.Proxy || '';
-              const filasDeEsteProxy = rowsPorProducto.filter(x => (x.Proxy || '') === proxyActual);
-              const idxEnFilasProxy  = filasDeEsteProxy.findIndex(x =>
-                x.App === r.App &&
-                x.APIProduct === r.APIProduct &&
-                x.Proxy === r.Proxy &&
-                x.KVM === r.KVM &&
-                x.Target === r.Target
+              // c) Agrupar por Proxy: rowspan bloque KVM/Target
+              const proxyActual = r.Proxy || "";
+              const filasDeEsteProxy = rowsPorProducto.filter(
+                x => (x.Proxy || "") === proxyActual
+              );
+              const idxEnFilasProxy = filasDeEsteProxy.findIndex(
+                x =>
+                  x.App === r.App &&
+                  x.APIProduct === r.APIProduct &&
+                  x.Proxy === r.Proxy &&
+                  x.KVM === r.KVM &&
+                  x.Target === r.Target
               );
               if (idxEnFilasProxy === 0) {
-                const tdProxy = document.createElement('td');
-                tdProxy.rowSpan     = filasDeEsteProxy.length;
+                const tdProxy = document.createElement("td");
+                tdProxy.rowSpan = filasDeEsteProxy.length;
                 tdProxy.textContent = proxyActual;
                 tr.appendChild(tdProxy);
               }
 
-              // d) Finalmente, cada fila muestra KVM y Target
-              const tdKVM = document.createElement('td');
-              tdKVM.textContent = r.KVM || '';
+              // d) Cada fila muestra KVM y Target
+              const tdKVM = document.createElement("td");
+              tdKVM.textContent = r.KVM || "";
               tr.appendChild(tdKVM);
 
-              const tdTarget = document.createElement('td');
-              tdTarget.textContent = r.Target || '';
+              const tdTarget = document.createElement("td");
+              tdTarget.textContent = r.Target || "";
               tr.appendChild(tdTarget);
 
               tbody.appendChild(tr);
@@ -835,55 +967,59 @@
       }
     }
 
-    // ------------------------------------------------------------
-    // Copiar tabla al portapapeles (HTML + texto plano)
-    // ------------------------------------------------------------
+    // ============================================
+    // COPIAR TABLA AL PORTAPAPELES
+    // ============================================
     function copySetup() {
-      const btn = document.getElementById('copyBtn');
+      const btn = document.getElementById("copyBtn");
       btn.onclick = async () => {
-        const tbl  = document.getElementById('inventoryTable');
+        const tbl = document.getElementById("inventoryTable");
         const html = tbl.outerHTML;
-        let text   = '';
-        tbl.querySelectorAll('tr').forEach(row => {
-          text += Array.from(row.children)
-            .map(td => td.innerText)
-            .join('\t') + '\n';
+        let text = "";
+        tbl.querySelectorAll("tr").forEach(row => {
+          text +=
+            Array.from(row.children)
+              .map(td => td.innerText)
+              .join("\t") + "\n";
         });
         try {
           await navigator.clipboard.write([
             new ClipboardItem({
-              'text/html': new Blob([html], { type: 'text/html' }),
-              'text/plain': new Blob([text], { type: 'text/plain' })
+              "text/html": new Blob([html], { type: "text/html" }),
+              "text/plain": new Blob([text], { type: "text/plain" })
             })
           ]);
-          alert('Tabla copiada con formato');
+          alert("Tabla copiada con formato");
         } catch {
-          navigator.clipboard.writeText(text)
-            .then(() => alert('Tabla copiada como texto'));
+          navigator.clipboard.writeText(text).then(() =>
+            alert("Tabla copiada como texto")
+          );
         }
       };
     }
 
-    // ------------------------------------------------------------
-    // Exportar filtered a CSV y descargar
-    // ------------------------------------------------------------
+    // ============================================
+    // EXPORTAR “filtered” A CSV Y DESCARGAR
+    // ============================================
     function exportSetup() {
-      const btn = document.getElementById('exportBtn');
+      const btn = document.getElementById("exportBtn");
       btn.onclick = () => {
         const hdr = isDefault
-          ? ['Producto', 'Apps', 'Proxies', 'Descartable', 'Razón']
-          : ['App', 'Developer', 'APIProduct', 'Proxy', 'KVM', 'Target'];
-        const rows = filtered.map(r => hdr.map(c => r[c] || ''));
-        const csv  = [hdr, ...rows].map(a => a.join(';')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const link = document.createElement('a');
-        link.href     = URL.createObjectURL(blob);
-        link.download = isDefault ? 'productos_default.csv' : 'inventario.csv';
+          ? ["Producto", "Apps", "Proxies", "Descartable", "Razón"]
+          : ["App", "Developer", "APIProduct", "Proxy", "KVM", "Target"];
+        const rows = filtered.map(r => hdr.map(c => r[c] || ""));
+        const csv = [hdr, ...rows].map(a => a.join(";")).join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = isDefault ? "productos_default.csv" : "inventario.csv";
         link.click();
       };
     }
 
-    // Iniciar copiar y exportar
+    // ============================================
+    // INICIALIZAR COPIAR Y EXPORTAR
+    // ============================================
     copySetup();
     exportSetup();
   </script>
