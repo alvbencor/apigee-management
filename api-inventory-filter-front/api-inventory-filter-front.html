@@ -9,7 +9,7 @@
       font-family: monospace;
       margin: 2rem auto;
       width: 80%;
-      background-color: #3e5248;
+      background-color: #38463f;
       color: beige;
     }
     h1 {
@@ -74,20 +74,17 @@
     .url-group input,
     .url-group button {
       height: 2.5rem;
+      width: 13rem;
       padding: 0 0.5rem;
-      border: none;
+      border: 1px solid #3c3f3f;
       border-radius: 4px;
       font-family: monospace;
-    }
-    .url-group input {
       background: #52675b;
       color: beige;
-      width: 17rem;
     }
     .url-group input::placeholder {
-
-      color: beige;
-      width: 17rem;
+      color: #b4b083;
+      font-family: monospace;
     }
     .url-group button {
       background: #fffed0;
@@ -95,7 +92,12 @@
       cursor: pointer;
       text-align: left;
       width: 9rem;
-
+      border-color: #3c3f3f;
+    }
+    .url-group input:focus,
+    .url-group button:focus {
+      outline: none;
+      border-color: #b4b083; /* Amarillito claro */
     }
 
     /* --------------------------------------------
@@ -116,6 +118,13 @@
       display: none;
     }
 
+    /* ==============================
+       OCULTAR el grupo de botones al inicio
+       ============================== */
+    #buttonsGroup {
+      display: none;
+    }
+
     /* ---------------------------
        Buscador principal + toggle
        --------------------------- */
@@ -130,21 +139,19 @@
       width: 100%;
       max-width: 30rem;
       padding: 0.5rem;
-      border: none;
+      border: 1px solid #3c3f3f;
       border-radius: 4px;
       background: #52675b;
       color: beige;
       font-family: monospace;
     }
-    /* Placeholder en monospace y amarillo pálido */
-    #search::placeholder {
-      font-family: monospace;
+    #searchGroup input::placeholder {
       color: #b4b083;
-    }
-    #search {
-      display: block;
-      margin-right: 1rem;
       font-family: monospace;
+    }
+    #searchGroup input:focus {
+      outline: none;
+      border-color: #b4b083; /* Amarillito claro */
     }
     .filter-toggle {
       cursor: pointer;
@@ -156,6 +163,14 @@
       color: #fbf3a3;
     }
 
+    /* ---------------------------
+       Contador + archivo cargado
+       --------------------------- */
+    #loadedName {
+      color: #85ecb2;
+      margin-right: .3rem;
+    }
+
     /* ---------------------
        Filtros (fieldsets)
        --------------------- */
@@ -164,7 +179,8 @@
       font-family: monospace;
       display: flex;
       gap: 1rem;
-      display: none; /* oculto hasta toggle */
+      display: none; 
+      margin-right: .3rem;
     }
     fieldset {
       border: 1px solid #afe2b1;
@@ -182,121 +198,116 @@
     #filterOptions label {
       margin-right: 1rem;
     }
-    #stats { color: #add372; }
+    #stats { color: #add372; margin-right: .3rem;}
 
     /* ==============================
-       ESTILOS PARA “BOTONES-RADIO”
+       OCULTAR los inputs nativos
        ============================== */
-    .radio-btn input[type="radio"] {
-      display: none;
-    }
-    .radio-btn span {
-      display: inline-block;
-      padding: 0.4rem;
-      border-radius:0px;
-      background-color: #85ecb2;
-      opacity: 0.5;
-      cursor: pointer;
-      font-family: monospace;
-      font-size: 0.7rem;
-      user-select: none;
-      transition: opacity 0.2s ease;
-      margin-bottom: .7rem;
-      color: #3c3f3f;
-    }
-    .radio-btn input[type="radio"]:checked + span {
-      opacity: 1;
-    }
-    .radio-btn span:hover {
-      opacity: 0.8;
-    }
-
-    /* ==============================
-       ESTILOS PARA “BOTONES-CHECKBOX”
-       ============================== */
+    .radio-btn input[type="radio"],
     .checkbox-btn input[type="checkbox"] {
       display: none;
     }
+
+    /* ==============================
+       BOTONES RADIO / CHECKBOX: ESTADO INACTIVO
+       - fondo transparente
+       - borde y texto en verde claro (#85ecb2)
+       ============================== */
+    .radio-btn span,
     .checkbox-btn span {
       display: inline-block;
       padding: 0.4rem;
-      border-radius:0px;
-      background-color: #85ecb2;
-      opacity: 0.5;
+      border-radius: 0;               /* sin esquinas redondeadas */
+      background-color: transparent;  /* fondo transparente */
+      border: 1px solid #85ecb2;      /* borde en verde claro */
       cursor: pointer;
       font-family: monospace;
       font-size: 0.7rem;
       user-select: none;
-      transition: opacity 0.2s ease;
-      margin-bottom: .7rem;
-      color: #3c3f3f;
-    }
-    .checkbox-btn input[type="checkbox"]:checked + span {
+      transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+      margin-bottom: 0.7rem;
+      margin-right: -0.7rem;
+      color: #85ecb2;                  /* texto en verde claro */
       opacity: 1;
     }
+
+    /* ----------------------------------------------
+       CUANDO EL RADIO O CHECKBOX ESTÁ “CHECKED”:
+       - fondo lleno en verde claro (#85ecb2)
+       - texto en color del fondo de la página (#38463f)
+       ---------------------------------------------- */
+    .radio-btn input[type="radio"]:checked + span,
+    .checkbox-btn input[type="checkbox"]:checked + span {
+      background-color: #85ecb2;      /* verde claro sólido */
+      border-color: #85ecb2;          /* borde del mismo color */
+      color: #38463f;                 /* texto en color del fondo de página */
+    }
+
+    /* ----------------------------------------------
+       ESTADO HOVER (opcionalmente, realza un poco)
+       ---------------------------------------------- */
+    .radio-btn span:hover,
     .checkbox-btn span:hover {
       opacity: 0.8;
     }
 
     /* ==============================
-       ESTILOS PARA BOTONES “Select All” /
-       “Deselect All”
+       BOTONES “Select All” / “Deselect All”
+       - solo texto, igual que el toggle
        ============================== */
     .checkbox-btn-small {
-      display: inline-block;
-      padding: 0.3rem 0.6rem;
+      background: transparent !important; /* nada de fondo */
+      border: none !important;           /* sin bordes */
+      padding: 0 !important;             /* sin padding extra */
       margin-bottom: 0.5rem;
       font-family: monospace;
       font-size: 0.8rem;
-      color: #3c3f3f;
-      border: none;
+      color: #fbf3a3;                     /* mismo color que el toggle */
       cursor: pointer;
-      opacity: 0.8;
-      transition: opacity 0.2s ease;
+      opacity: 1;
+      transition: opacity 0.15s ease;
     }
     .checkbox-btn-small:hover {
-      opacity: 1;
+      opacity: 0.8;
+    }
+    #btnDeselectAll{
+      color: #f5f5dc;
     }
 
-    /* -----------------------------------------------------
-       Contenedor de “resultado de búsqueda” + botones
-       ----------------------------------------------------- */
-    #actionsContainer {
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    /* Texto de resultados (izquierda) */
-    #resultCount {
-      font-size: 0.8rem;
-      color: #cec78f;
+    /* ==============================
+       BOTONES “Copiar” y “Exportar”
+       ============================== */
+    .copy-btn,
+    .export-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
       font-family: monospace;
-    }
-    /* Grupo de botones (derecha) */
-    #buttonsGroup {
-      display: flex;
-      gap: 1rem;
+      font-size: 0.9rem;
     }
     .copy-btn {
       background-color: #fbf3a3;
       color: #3c3f3f;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: monospace;
-      font-size: 0.9rem;
     }
     .export-btn {
       background-color: #abfbb0;
       color: #3c3f3f;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: monospace;
-      font-size: 0.9rem;
+      margin-left: 1rem; 
+      margin-right: 4px;
+    }
+    .copy-btn:focus,
+    .export-btn:focus {
+      outline: none;
+      border: 1px solid #b4b083; 
+    }
+
+    #actionsContainer{
+      display: block;
+      justify-content: space-between;
+      align-items: center;
+      margin:2rem 0;
+      margin-right: .3rem;
     }
 
     /* -------------
@@ -313,7 +324,19 @@
       width: 100%;
       border-collapse: collapse;
     }
-    th, td {
+    th {
+      border: 1px solid #ccc;
+      padding: 0.5rem;            /* Mayor altura para coincidir con el input de filtro */
+      text-align: left;
+      font-family: monospace;
+      background-color: #afe2b1;
+      color: #3c3f3f;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      cursor: pointer;
+    }
+    td {
       border: 1px solid #ccc;
       padding: 0.3rem;
       text-align: left;
@@ -324,36 +347,79 @@
       overflow: hidden;
       position: relative;
     }
-    th {
-      background-color: #afe2b1;
-      color: #3c3f3f;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      cursor: pointer;
-    }
     .group-even td {
-      background-color: #52675b;
+      background-color: #4b5e54;
     }
     .group-odd td {
-      background-color: #3d5a4f;
+      background-color: #38463f;
     }
     .column-search-input {
       width: 90%;
-      padding: 0.3rem;
+      padding: 0.5rem;            
       border: 1px solid #3c3f3f;
       border-radius: 4px;
       background: #52675b;
       color: beige;
       font-family: monospace;
     }
+    .column-search-input::placeholder {
+      font-family: monospace;
+      color: #b4b083;          
+    }
+    .column-search-input:focus {
+      outline: none;
+      border-color: #b4b083; 
+    }
+ /* =========================================================
+   1) Reservar hueco para la scrollbar sin cambiar el tamaño
+   ========================================================= */
+.table-container {
+  /* En Edge/Chrome/Firefox moderno, esto reserva siempre
+     espacio para la barra de scroll vertical. */
+  scrollbar-gutter: stable;
+}
+
+/* =========================================================
+   2) Scrollbar muy fina (4px) y casi invisible salvo hover
+   ========================================================= */
+/* — Para navegadores WebKit/Chromium (Chrome, Edge, Safari) — */
+.table-container::-webkit-scrollbar {
+  width: 1px;   
+  height: 1px;  
+}
+.table-container::-webkit-scrollbar-track {
+  background: #52675b00; /* track oscuro, mismo color de fondo */
+}
+.table-container::-webkit-scrollbar-thumb {
+  /* Por defecto, thumb transparente para que no se note */
+  background-color: transparent;
+  border-radius: 0px;
+}
+/* Al hacer hover sobre la tabla, pintamos el thumb en color suave */
+.table-container:hover::-webkit-scrollbar-thumb {
+  background-color: #a3bfa3; /* Amarillito pálido */
+  border: 1px solid #52675b;
+}
+
+/* — Para Firefox — */
+.table-container {
+  scrollbar-width: thin;            /* 4px aprox. */
+  scrollbar-color: transparent #52675b00;
+  /* El primer valor (thumb) transparente por defecto,
+     el segundo (track) color de fondo */
+}
+.table-container:hover {
+  /* Al hacer hover, mostramos el thumb con color suave */
+  scrollbar-color: #a3bfa3 #52675b;
+}
+
+
   </style>
 </head>
 <body>
   <!-- ================================
        ENCABEZADO PRINCIPAL
-       ================================
-  -->
+       ================================ -->
   <div class="header-container">
     <div>
       <h1>Inventario de APIs</h1>
@@ -447,17 +513,16 @@
         </label>
         <label class="checkbox-btn">
           <input type="checkbox" id="chkKVM" checked>
-          <span>KVM</span>
+          <span>KVM-Entry</span>
         </label>
         <label class="checkbox-btn">
           <input type="checkbox" id="chkTarget" checked>
           <span>Targets</span>
         </label>
       </div>
-            <!-- Botones Select/Deselect pequeños -->
-      <button id="btnSelectAll" class="checkbox-btn-small">Todos</button>
+      <!-- Botones Select/Deselect pequeños -->
+      <button id="btnSelectAll" class="checkbox-btn-small">Todos (defecto)</button>
       <button id="btnDeselectAll" class="checkbox-btn-small">Limpiar</button>
- 
     </fieldset>
   </div>
 
@@ -465,8 +530,7 @@
        FILA DE “RESULTADO DE BÚSQUEDA” + BOTONES
        ==================================================
        (oculto hasta cargar el CSV)
-       ==================================================
-  -->
+       ================================================== -->
   <div id="actionsContainer">
     <div id="resultCount"></div>
     <div id="buttonsGroup">
@@ -525,6 +589,7 @@
     const actionsContainer = document.getElementById("actionsContainer");
     const resultCountDiv   = document.getElementById("resultCount");
     const headerRow        = document.getElementById("headerRow");
+    const buttonsGroup     = document.getElementById("buttonsGroup");
 
     // ============================================
     // FUNCIONES AUXILIARES
@@ -547,7 +612,12 @@
       Array.from(headerRow.children).forEach(th => {
         const colName = th.getAttribute("data-column-name");
         if (colName) {
-          th.innerHTML = colName;
+          // Restauramos texto visible del encabezado:
+          if (colName === "KVM") {
+            th.innerHTML = "KVM-Entry";
+          } else {
+            th.innerHTML = colName;
+          }
         }
       });
     }
@@ -616,6 +686,9 @@
       searchFilter.style.display     = "flex";
       actionsContainer.style.display = "flex";
 
+      // ◼️ Mostrar los botones de Copiar/Exportar una vez cargado el archivo
+      buttonsGroup.style.display     = "flex";
+
       // 3) Rellenar “stats” y “Archivo cargado”
       loadedName.textContent        = name;
       loadedMessage.style.display   = "inline-block";
@@ -630,7 +703,7 @@
       // 5) Mostrar tabla contenedor
       document.querySelector(".table-container").style.display = "block";
 
-      // 6) Definir cabeceras
+      // 6) Definir cabeceras (la clave "KVM" se mostrará como "KVM-Entry")
       const headers = isDefault
         ? ["Producto", "Apps", "Proxies", "Descartable", "Razón"]
         : ["App", "Developer", "APIProduct", "Proxy", "KVM", "Target"];
@@ -659,9 +732,11 @@
       });
       cols.forEach(c => {
         const th = document.createElement("th");
-        th.textContent = c;
+        // Si la clave es "KVM", mostrar "KVM-Entry"
+        th.textContent = (c === "KVM") ? "KVM-Entry" : c;
         headerRow.appendChild(th);
         if (!isDefault) {
+          // Al hacer clic, usamos la clave real c para filtrar (fila[c])
           th.addEventListener("click", () => activateColumnSearch(c, th));
         }
       });
@@ -742,7 +817,10 @@
       Array.from(headerRow.children).forEach(th => {
         if (th !== thElement) {
           const almacen = th.getAttribute("data-column-name");
-          if (almacen) th.innerHTML = almacen;
+          if (almacen) {
+            // Restauramos el texto visible (considerando KVM-Entry)
+            th.innerHTML = (almacen === "KVM") ? "KVM-Entry" : almacen;
+          }
         }
       });
       // 2) Limpiar filtros de columna
@@ -750,7 +828,7 @@
       // 3) Borrar buscador principal
       searchInput.value = "";
 
-      // 4) Marcar checkbox de la columna
+      // 4) Marcar checkbox de la columna correspondiente
       const checkboxId = columnToCheckboxId[columnName];
       if (checkboxId) {
         const cb = document.getElementById(checkboxId);
@@ -766,7 +844,8 @@
       const input = document.createElement("input");
       input.type = "text";
       input.className = "column-search-input";
-      input.placeholder = `Buscar en ${columnName}...`;
+      // Placeholder igual al del filtro principal
+      input.placeholder = `Buscar en ${ (columnName === "KVM") ? "KVM-Entry" : columnName }...`;
       thElement.appendChild(input);
       input.focus();
 
@@ -778,7 +857,7 @@
       // 8) Restaurar cabecera al perder foco
       input.addEventListener("blur", () => {
         columnFilters[columnName] = "";
-        thElement.innerHTML = columnName;
+        thElement.innerHTML = (columnName === "KVM") ? "KVM-Entry" : columnName;
         applyFilters();
       });
     }
@@ -974,6 +1053,7 @@
                 tr.appendChild(tdProxy);
               }
 
+              // Mostrar KVM en su propia celda
               const tdKVM = document.createElement("td");
               tdKVM.textContent = r.KVM || "";
               tr.appendChild(tdKVM);
