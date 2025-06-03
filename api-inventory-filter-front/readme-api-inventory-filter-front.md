@@ -1,6 +1,6 @@
 # api-inventory-filter-front
 
-**`api-inventory-filter-front`** es una herramienta web de código abierto diseñada para visualizar, filtrar y explorar la relación completa entre **Apps**, **Developers**, **Products**, **Proxies**, **KVMs** y **Targets** de todas las APIs. Permite:
+**`api-inventory-filter-front`** es una herramienta web diseñada para visualizar, filtrar y explorar la relación completa entre **Apps**, **Developers**, **Products**, **Proxies**, **KVMs** y **Targets** de todas las APIs de Apigee. Permite:
 
 - Mostrar en una tabla jerárquica (con `rowspan`) la estructura App → Producto → Proxy → (KVM, Target).  
 - Filtrar por campos individuales (cada columna) o por categorías de producto.  
@@ -39,7 +39,6 @@ Gracias a su interfaz sencilla de arrastrar/soltar (drag & drop) o carga desde U
    - Solo hay un input abierto a la vez: al abrir uno nuevo, se cierra (y limpia) cualquier otro.  
 7. **Conteo Dinámico (“Resultado de búsqueda: X apps, Y productos, Z proxies”)**  
    - Se muestra junto a los botones “Copiar tabla” / “Exportar a CSV”.  
-   - Emplea singular/plural según corresponda (1 app vs. 2 apps, 1 proxy vs. 3 proxies).  
 8. **Copia al Portapapeles**  
    - Botón “Copiar tabla” genera HTML + texto plano (tabulado) y lo escribe en el portapapeles.  
 9. **Exportar a CSV**  
@@ -83,22 +82,3 @@ api-inventory-filter-front/
   Se incluye vía CDN:  
   ```html
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
-  
-
-## 📖 Uso básico
-
-1. **Abrir `api-inventory-filter-front.html`** en tu navegador (no se requiere servidor).  
-2. **Cargar CSV**:  
-   - Opción A: Arrastra `inventarioCSVmock.csv` sobre la zona punteada.  
-   - Opción B: Haz clic en la zona, selecciona el archivo desde tu disco.  
-   - Opción C: Copia una URL pública que apunte al CSV (por ejemplo, un raw de GitHub) y haz clic en “Cargar inventario”.  
-3. **Explorar tabla**:  
-   - Observa la jerarquía: App → Developer → Producto → Proxy → (KVM / Target).  
-4. **Filtrar**:  
-   - **Radios “Filtrado por producto”**: selecciona la casilla deseada (ej. “Productos huérfanos”).  
-   - **Checkboxes** (“Filtrado por campo”): marca/desmarca columnas para la búsqueda global.  
-   - **Buscar global**: escribe un texto que aparezca en alguna de las columnas habilitadas.  
-   - **Buscar por columna**: haz clic en un `<th>`, escribe el término en ese input, y observa cómo filtra solo esa columna.  
-5. **Acciones**:  
-   - “Copiar tabla” añade al portapapeles la tabla completa (HTML + texto tabulado).  
-   - “Exportar a CSV” descarga un archivo CSV con el contenido filtrado.  
