@@ -221,7 +221,7 @@
   <div class="file-loading" id="fileLoading">
     <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
     <div class="url-group" id="urlGroup">
-      <input type="text" id="urlInput" placeholder="Introduce URL o ruta local">
+      <input type="text" id="urlInput" placeholder="Introduce URL">
       <button id="loadUrlBtn">Cargar inventario</button>
     </div>
   </div>
@@ -634,84 +634,113 @@
       renderTable();
     }
 
-    function renderTable() {
-      const tbody = document.querySelector('#inventoryTable tbody');
-      tbody.innerHTML = '';
+    // … (todas las funciones anteriores permanecen sin cambios) …
 
-      if (isDefault) {
-        filtered.forEach((r, idx) => {
-          const tr = document.createElement('tr');
-          // Alternar sombreado: fila par/impar normal para default
-          tr.className = idx % 2 === 0 ? 'group-even' : 'group-odd';
-          ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
-            const td = document.createElement('td');
-            td.textContent = r[c] || '';
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
+  function renderTable() {
+    const tbody = document.querySelector('#inventoryTable tbody');
+    tbody.innerHTML = '';
+
+    if (isDefault) {
+      filtered.forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = idx % 2 === 0 ? 'group-even' : 'group-odd';
+        ['Producto','Apps','Proxies','Descartable','Razón'].forEach(c => {
+          const td = document.createElement('td');
+          td.textContent = r[c] || '';
+          tr.appendChild(td);
         });
-      } else {
-        // Agrupar por App y alternar sombreado por grupo
-        const appsUnicos = Array.from(new Set(filtered.map(r => r.App)));
-        appsUnicos.forEach((app, appIdx) => {
-          const rowsPorApp = filtered.filter(r => r.App === app);
-          const totalFilasApp = rowsPorApp.length;
-          const groupClass = appIdx % 2 === 0 ? 'group-even' : 'group-odd';
+        tbody.appendChild(tr);
+      });
+    } else {
+      // 1) Agrupar por App
+      const appsUnicos = Array.from(new Set(filtered.map(r => r.App)));
+      appsUnicos.forEach((app, appIdx) => {
+        const rowsPorApp = filtered.filter(r => r.App === app);
+        const totalFilasApp = rowsPorApp.length;
+        // alternamos sombreado por grupo de App
+        const groupClass = (appIdx % 2 === 0) ? 'group-even' : 'group-odd';
 
-          // Dentro de cada app, agrupar por producto
-          const productos = Array.from(new Set(rowsPorApp.map(r => r.APIProduct)));
-          let appRowStart = true;
+        // 2) Dentro de cada App, agrupar por Producto
+        const productos = Array.from(new Set(rowsPorApp.map(r => r.APIProduct)));
+        let appRowStart = true;
 
-          productos.forEach(prod => {
-            const rowsPorProducto = rowsPorApp.filter(r => r.APIProduct === prod);
-            const filasProxy = rowsPorProducto.length;
+        productos.forEach(prod => {
+          const rowsPorProducto = rowsPorApp.filter(r => r.APIProduct === prod);
+          const filasProxyTotales = rowsPorProducto.reduce((acc, row) => {
+            // vamos a contar subfilas por proxy
+            return acc + 1; // cada fila de rowsPorProducto representa una combinación Proxy-KVM-Target
+          }, 0);
 
-            rowsPorProducto.forEach((r, index) => {
-              const tr = document.createElement('tr');
-              tr.className = groupClass;
+          // para manejar rowspan de Producto
+          const filasProducto = rowsPorProducto.length;
 
-              // Primer fila de la app: rowspan para App y Developer
-              if (appRowStart) {
-                const tdApp = document.createElement('td');
-                tdApp.rowSpan = totalFilasApp;
-                tdApp.textContent = r.App;
-                tr.appendChild(tdApp);
+          rowsPorProducto.forEach((r, idxProducto) => {
+            const tr = document.createElement('tr');
+            tr.className = groupClass;
 
-                const tdDev = document.createElement('td');
-                tdDev.rowSpan = totalFilasApp;
-                tdDev.textContent = r.Developer;
-                tr.appendChild(tdDev);
+            // a) Primera fila de la App: rowspan para App y Developer
+            if (appRowStart) {
+              const tdApp = document.createElement('td');
+              tdApp.rowSpan = totalFilasApp;
+              tdApp.textContent = r.App;
+              tr.appendChild(tdApp);
 
-                appRowStart = false;
-              }
+              const tdDev = document.createElement('td');
+              tdDev.rowSpan = totalFilasApp;
+              tdDev.textContent = r.Developer;
+              tr.appendChild(tdDev);
 
-              // Primera fila de este producto: rowspan para APIProduct
-              if (index === 0) {
-                const tdProd = document.createElement('td');
-                tdProd.rowSpan = filasProxy;
-                tdProd.textContent = r.APIProduct;
-                tr.appendChild(tdProd);
-              }
+              appRowStart = false;
+            }
 
-              // Proxy, KVM, Target para cada fila
+            // b) Primera fila del Producto: rowspan para APIProduct
+            if (idxProducto === 0) {
+              const tdProd = document.createElement('td');
+              tdProd.rowSpan = filasProducto;
+              tdProd.textContent = r.APIProduct;
+              tr.appendChild(tdProd);
+            }
+
+            // ----- NUEVA LÓGICA PARA AGRUPAR POR PROXY -----
+            // 3) DENTRO DE ESTE PRODUCTO, agrupar filasPorProducto por Proxy
+            //    Y cada Proxy debe abarcar tantas filas como combinaciones KVM/Target haya.
+            //    Para simplificar, asumimos que cada "rowsPorProducto" puede tener varias filas
+            //    con el mismo r.Proxy, y cada una corresponde a un par KVM-Target.
+
+            // Solo añadimos celda de Proxy en la primera aparición de ese proxy en el bloque:
+            //  Encontrar la lista completa de filas de este proxy concreto:
+            const proxyActual = r.Proxy || '';
+            const filasDeEsteProxy = rowsPorProducto.filter(x => (x.Proxy||'') === proxyActual);
+            const idxEnFilasProxy = filasDeEsteProxy.findIndex(x =>
+              x.App === r.App &&
+              x.APIProduct === r.APIProduct &&
+              x.Proxy === r.Proxy &&
+              x.KVM === r.KVM &&
+              x.Target === r.Target
+            );
+            // Si esta fila es la primera vez que sale este proxy dentro del producto:
+            if (idxEnFilasProxy === 0) {
               const tdProxy = document.createElement('td');
-              tdProxy.textContent = r.Proxy || '';
+              tdProxy.rowSpan = filasDeEsteProxy.length;
+              tdProxy.textContent = proxyActual;
               tr.appendChild(tdProxy);
+            }
 
-              const tdKVM = document.createElement('td');
-              tdKVM.textContent = r.KVM || '';
-              tr.appendChild(tdKVM);
+            // 4) Cada fila imprime su par KVM / Target
+            const tdKVM = document.createElement('td');
+            tdKVM.textContent = r.KVM || '';
+            tr.appendChild(tdKVM);
 
-              const tdTarget = document.createElement('td');
-              tdTarget.textContent = r.Target || '';
-              tr.appendChild(tdTarget);
+            const tdTarget = document.createElement('td');
+            tdTarget.textContent = r.Target || '';
+            tr.appendChild(tdTarget);
 
-              tbody.appendChild(tr);
-            });
+            tbody.appendChild(tr);
           });
         });
-      }
+      });
     }
+  }
 
     function copySetup() {
       const btn = document.getElementById('copyBtn');
