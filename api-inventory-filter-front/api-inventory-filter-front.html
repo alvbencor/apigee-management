@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inventario de APIs</title>
   <style>
+    /* Cuerpo de la página */
     body {
       font-family: monospace;
       margin: 2rem auto;
@@ -18,9 +19,7 @@
       margin: 0;
     }
 
-    /* ---------------------
-       Encabezado principal
-       --------------------- */
+    /* Encabezado principal: título e información adicional */
     .header-container {
       display: flex;
       justify-content: space-between;
@@ -43,9 +42,7 @@
       font-size: 0.8rem;
     }
 
-    /* ---------------------
-       Zona de carga inicial
-       --------------------- */
+    /* Zona de carga inicial: área drag & drop y entrada de URL */
     .file-loading {
       display: flex;
       gap: 1rem;
@@ -97,18 +94,10 @@
     .url-group input:focus,
     .url-group button:focus {
       outline: none;
-      border-color: #b4b083; /* Amarillito claro */
+      border-color: #b4b083;
     }
 
-    /* --------------------------------------------
-       Ocultar inicialmente ciertos bloques hasta
-       que se cargue el CSV:
-       - stats, “Archivo cargado”
-       - buscador principal (#searchFilter)
-       - filtros (#filterOptions)
-       - acciones (#actionsContainer)
-       - tabla (#inventoryTable)
-       -------------------------------------------- */
+    /* Ocultar elementos antes de cargar el CSV */
     #stats,
     .loaded,
     #searchFilter,
@@ -118,16 +107,12 @@
       display: none;
     }
 
-    /* ==============================
-       OCULTAR el grupo de botones al inicio
-       ============================== */
+    /* Ocultar grupo de botones al inicio */
     #buttonsGroup {
       display: none;
     }
 
-    /* ---------------------------
-       Buscador principal + toggle
-       --------------------------- */
+    /* Estilos del buscador principal y toggle de filtros */
     .search-filter {
       display: flex;
       align-items: center;
@@ -151,7 +136,7 @@
     }
     #searchGroup input:focus {
       outline: none;
-      border-color: #b4b083; /* Amarillito claro */
+      border-color: #b4b083;
     }
     .filter-toggle {
       cursor: pointer;
@@ -163,24 +148,20 @@
       color: #fbf3a3;
     }
 
-    /* ---------------------------
-       Contador + archivo cargado
-       --------------------------- */
+    /* Estilo del contador y nombre de archivo cargado */
     #loadedName {
       color: #85ecb2;
-      margin-right: .3rem;
+      margin-right: 0.3rem;
     }
 
-    /* ---------------------
-       Filtros (fieldsets)
-       --------------------- */
+    /* Estilos de la sección de filtros */
     #filterOptions {
       margin: 1rem 0;
       font-family: monospace;
       display: flex;
       gap: 1rem;
-      display: none; 
-      margin-right: .3rem;
+      display: none;
+      margin-right: 0.3rem;
     }
     fieldset {
       border: 1px solid #afe2b1;
@@ -198,28 +179,25 @@
     #filterOptions label {
       margin-right: 1rem;
     }
-    #stats { color: #add372; margin-right: .3rem;}
+    #stats {
+      color: #add372;
+      margin-right: 0.3rem;
+    }
 
-    /* ==============================
-       OCULTAR los inputs nativos
-       ============================== */
+    /* Ocultar inputs nativos de radio y checkbox */
     .radio-btn input[type="radio"],
     .checkbox-btn input[type="checkbox"] {
       display: none;
     }
 
-    /* ==============================
-       BOTONES RADIO / CHECKBOX: ESTADO INACTIVO
-       - fondo transparente
-       - borde y texto en verde claro (#85ecb2)
-       ============================== */
+    /* Estilos de botones radio y checkbox en estado inactivo */
     .radio-btn span,
     .checkbox-btn span {
       display: inline-block;
       padding: 0.4rem;
-      border-radius: 0;               /* sin esquinas redondeadas */
-      background-color: transparent;  /* fondo transparente */
-      border: 1px solid #85ecb2;      /* borde en verde claro */
+      border-radius: 0;
+      background-color: transparent;
+      border: 1px solid #85ecb2;
       cursor: pointer;
       font-family: monospace;
       font-size: 0.7rem;
@@ -227,42 +205,31 @@
       transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
       margin-bottom: 0.7rem;
       margin-right: -0.7rem;
-      color: #85ecb2;                  /* texto en verde claro */
+      color: #85ecb2;
       opacity: 1;
     }
 
-    /* ----------------------------------------------
-       CUANDO EL RADIO O CHECKBOX ESTÁ “CHECKED”:
-       - fondo lleno en verde claro (#85ecb2)
-       - texto en color del fondo de la página (#38463f)
-       ---------------------------------------------- */
+    /* Estado checked de radio/checkbox */
     .radio-btn input[type="radio"]:checked + span,
     .checkbox-btn input[type="checkbox"]:checked + span {
-      background-color: #85ecb2;      /* verde claro sólido */
-      border-color: #85ecb2;          /* borde del mismo color */
-      color: #38463f;                 /* texto en color del fondo de página */
+      background-color: #85ecb2;
+      border-color: #85ecb2;
+      color: #38463f;
     }
-
-    /* ----------------------------------------------
-       ESTADO HOVER (opcionalmente, realza un poco)
-       ---------------------------------------------- */
     .radio-btn span:hover,
     .checkbox-btn span:hover {
       opacity: 0.8;
     }
 
-    /* ==============================
-       BOTONES “Select All” / “Deselect All”
-       - solo texto, igual que el toggle
-       ============================== */
+    /* Botones “Seleccionar todos” y “Deseleccionar todos” */
     .checkbox-btn-small {
-      background: transparent !important; /* nada de fondo */
-      border: none !important;           /* sin bordes */
-      padding: 0 !important;             /* sin padding extra */
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
       margin-bottom: 0.5rem;
       font-family: monospace;
       font-size: 0.8rem;
-      color: #fbf3a3;                     /* mismo color que el toggle */
+      color: #fbf3a3;
       cursor: pointer;
       opacity: 1;
       transition: opacity 0.15s ease;
@@ -270,13 +237,11 @@
     .checkbox-btn-small:hover {
       opacity: 0.8;
     }
-    #btnDeselectAll{
+    #btnDeselectAll {
       color: #f5f5dc;
     }
 
-    /* ==============================
-       BOTONES “Copiar” y “Exportar”
-       ============================== */
+    /* Botones “Copiar tabla” y “Exportar a CSV” */
     .copy-btn,
     .export-btn {
       padding: 0.5rem 1rem;
@@ -293,26 +258,25 @@
     .export-btn {
       background-color: #abfbb0;
       color: #3c3f3f;
-      margin-left: 1rem; 
+      margin-left: 1rem;
       margin-right: 4px;
     }
     .copy-btn:focus,
     .export-btn:focus {
       outline: none;
-      border: 1px solid #b4b083; 
+      border: 1px solid #b4b083;
     }
 
-    #actionsContainer{
+    /* Contenedor de acciones: resultados y botones */
+    #actionsContainer {
       display: block;
       justify-content: space-between;
       align-items: center;
-      margin:2rem 0;
-      margin-right: .3rem;
+      margin: 2rem 0;
+      margin-right: 0.3rem;
     }
 
-    /* -------------
-       Tabla final
-       ------------- */
+    /* Estilos de la tabla de resultados */
     .table-container {
       max-width: 80vw;
       margin: 0 auto 2rem;
@@ -326,7 +290,7 @@
     }
     th {
       border: 1px solid #ccc;
-      padding: 0.5rem;            /* Mayor altura para coincidir con el input de filtro */
+      padding: 0.5rem;
       text-align: left;
       font-family: monospace;
       background-color: #afe2b1;
@@ -355,7 +319,7 @@
     }
     .column-search-input {
       width: 90%;
-      padding: 0.5rem;            
+      padding: 0.5rem;
       border: 1px solid #3c3f3f;
       border-radius: 4px;
       background: #52675b;
@@ -364,62 +328,47 @@
     }
     .column-search-input::placeholder {
       font-family: monospace;
-      color: #b4b083;          
+      color: #b4b083;
     }
     .column-search-input:focus {
       outline: none;
-      border-color: #b4b083; 
+      border-color: #b4b083;
     }
- /* =========================================================
-   1) Reservar hueco para la scrollbar sin cambiar el tamaño
-   ========================================================= */
-.table-container {
-  /* En Edge/Chrome/Firefox moderno, esto reserva siempre
-     espacio para la barra de scroll vertical. */
-  scrollbar-gutter: stable;
-}
 
-/* =========================================================
-   2) Scrollbar muy fina (4px) y casi invisible salvo hover
-   ========================================================= */
-/* — Para navegadores WebKit/Chromium (Chrome, Edge, Safari) — */
-.table-container::-webkit-scrollbar {
-  width: 1px;   
-  height: 1px;  
-}
-.table-container::-webkit-scrollbar-track {
-  background: #52675b00; /* track oscuro, mismo color de fondo */
-}
-.table-container::-webkit-scrollbar-thumb {
-  /* Por defecto, thumb transparente para que no se note */
-  background-color: transparent;
-  border-radius: 0px;
-}
-/* Al hacer hover sobre la tabla, pintamos el thumb en color suave */
-.table-container:hover::-webkit-scrollbar-thumb {
-  background-color: #a3bfa3; /* Amarillito pálido */
-  border: 1px solid #52675b;
-}
+    /* Reservar espacio para la scrollbar sin cambiar el tamaño del contenedor */
+    .table-container {
+      scrollbar-gutter: stable;
+    }
 
-/* — Para Firefox — */
-.table-container {
-  scrollbar-width: thin;            /* 4px aprox. */
-  scrollbar-color: transparent #52675b00;
-  /* El primer valor (thumb) transparente por defecto,
-     el segundo (track) color de fondo */
-}
-.table-container:hover {
-  /* Al hacer hover, mostramos el thumb con color suave */
-  scrollbar-color: #a3bfa3 #52675b;
-}
+    /* Personalización de la scrollbar en WebKit/Chromium */
+    .table-container::-webkit-scrollbar {
+      width: 1px;
+      height: 1px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: 0;
+    }
+    .table-container:hover::-webkit-scrollbar-thumb {
+      background-color: #a3bfa3;
+      border: 1px solid #52675b;
+    }
 
-
+    /* Personalización de la scrollbar en Firefox */
+    .table-container {
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+    }
+    .table-container:hover {
+      scrollbar-color: #a3bfa3 transparent;
+    }
   </style>
 </head>
 <body>
-  <!-- ================================
-       ENCABEZADO PRINCIPAL
-       ================================ -->
+  <!-- Encabezado principal con título e información de estado -->
   <div class="header-container">
     <div>
       <h1>Inventario de APIs</h1>
@@ -432,10 +381,7 @@
     </div>
   </div>
 
-  <!-- ================================
-       ZONA DE CARGA INICIAL
-       ================================
-  -->
+  <!-- Área de carga de archivo CSV: arrastrar o ingresar URL -->
   <div class="file-loading" id="fileLoading">
     <div class="dropzone" id="dropzone">Arrastra tu CSV o haz clic</div>
     <div class="url-group" id="urlGroup">
@@ -445,10 +391,7 @@
   </div>
   <input type="file" id="fileInput" accept=".csv" style="display: none;">
 
-  <!-- ================================
-       BUSCADOR PRINCIPAL + TOGGLE
-       ================================
-  -->
+  <!-- Buscador principal y botón para mostrar/ocultar filtros -->
   <div class="search-filter" id="searchFilter">
     <div id="searchGroup">
       <input id="search" type="text" placeholder="Escribe para filtrar...">
@@ -459,12 +402,8 @@
     </div>
   </div>
 
-  <!-- ================================
-       FILTROS (OCULTOS HASTA TOGGLE)
-       ================================
-  -->
+  <!-- Contenedor de filtros, oculto por defecto -->
   <div id="filterOptions">
-    <!-- Filtrado por producto -->
     <fieldset>
       <legend>Filtrado por producto</legend>
       <div class="radios">
@@ -491,7 +430,6 @@
       </div>
     </fieldset>
 
-    <!-- Filtrado por campo -->
     <fieldset>
       <legend>Filtrado por campo</legend>
       <div class="checkboxes">
@@ -520,17 +458,12 @@
           <span>Targets</span>
         </label>
       </div>
-      <!-- Botones Select/Deselect pequeños -->
       <button id="btnSelectAll" class="checkbox-btn-small">Todos (defecto)</button>
       <button id="btnDeselectAll" class="checkbox-btn-small">Limpiar</button>
     </fieldset>
   </div>
 
-  <!-- ==================================================
-       FILA DE “RESULTADO DE BÚSQUEDA” + BOTONES
-       ==================================================
-       (oculto hasta cargar el CSV)
-       ================================================== -->
+  <!-- Sección de resultados y botones de acción (oculta inicialmente) -->
   <div id="actionsContainer">
     <div id="resultCount"></div>
     <div id="buttonsGroup">
@@ -539,10 +472,7 @@
     </div>
   </div>
 
-  <!-- ================================
-       TABLA FINAL (oculta al inicio)
-       ================================
-  -->
+  <!-- Contenedor de la tabla de inventario -->
   <div class="table-container">
     <table id="inventoryTable">
       <thead>
@@ -552,15 +482,13 @@
     </table>
   </div>
 
-  <!-- Papaparse (para parsear CSVs en el navegador) -->
+  <!-- Importar PapaParse para parsear archivos CSV -->
   <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    // ============================================
-    // VARIABLES GLOBALES
-    // ============================================
+    // Variables globales para almacenar datos y estado
     let data = [], filtered = [], isDefault = false;
 
-    // Mapa de columna → ID de checkbox
+    // Mapeo de nombre de columna a checkbox correspondiente
     const columnToCheckboxId = {
       App: "chkApp",
       Developer: "chkDev",
@@ -572,59 +500,57 @@
     const columnFilters = {};
 
     // Referencias a elementos del DOM
-    const dropzone         = document.getElementById("dropzone");
-    const fileInput        = document.getElementById("fileInput");
-    const urlInput         = document.getElementById("urlInput");
-    const loadUrlBtn       = document.getElementById("loadUrlBtn");
-    const fileLoading      = document.getElementById("fileLoading");
-    const loadedMessage    = document.getElementById("loadedMessage");
-    const loadedName       = document.getElementById("loadedName");
-    const statsDiv         = document.getElementById("stats");
-    const searchFilter     = document.getElementById("searchFilter");
-    const searchInput      = document.getElementById("search");
-    const filterToggle     = document.getElementById("filterToggle");
-    const toggleArrow      = document.getElementById("toggleArrow");
-    const toggleText       = document.getElementById("toggleText");
-    const filterOptions    = document.getElementById("filterOptions");
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const urlInput = document.getElementById("urlInput");
+    const loadUrlBtn = document.getElementById("loadUrlBtn");
+    const fileLoading = document.getElementById("fileLoading");
+    const loadedMessage = document.getElementById("loadedMessage");
+    const loadedName = document.getElementById("loadedName");
+    const statsDiv = document.getElementById("stats");
+    const searchFilter = document.getElementById("searchFilter");
+    const searchInput = document.getElementById("search");
+    const filterToggle = document.getElementById("filterToggle");
+    const toggleArrow = document.getElementById("toggleArrow");
+    const toggleText = document.getElementById("toggleText");
+    const filterOptions = document.getElementById("filterOptions");
     const actionsContainer = document.getElementById("actionsContainer");
-    const resultCountDiv   = document.getElementById("resultCount");
-    const headerRow        = document.getElementById("headerRow");
-    const buttonsGroup     = document.getElementById("buttonsGroup");
+    const resultCountDiv = document.getElementById("resultCount");
+    const headerRow = document.getElementById("headerRow");
+    const buttonsGroup = document.getElementById("buttonsGroup");
 
-    // ============================================
-    // FUNCIONES AUXILIARES
-    // ============================================
+    /**
+     * Restablece todos los radio buttons y checkboxes a su estado predeterminado (seleccionado).
+     */
     function resetRadiosAndCheckboxes() {
       document.querySelector('input[name="mode"][value="all"]').checked = true;
-      ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"].forEach(id => {
-        document.getElementById(id).checked = true;
-      });
+      ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"]
+        .forEach(id => document.getElementById(id).checked = true);
     }
 
+    /**
+     * Devuelve true si existe algún filtro de columna activo (input en cabecera).
+     */
     function isAnyColumnFilterActive() {
-      return Object.values(columnFilters).some(term => term && term.trim().length > 0);
+      return Object.values(columnFilters).some(
+        term => term && term.trim().length > 0
+      );
     }
 
+    /**
+     * Restablece la interfaz de filtros de columna (restaura texto de encabezados).
+     */
     function resetColumnFiltersUI() {
-      for (const key in columnFilters) {
-        columnFilters[key] = "";
-      }
+      Object.keys(columnFilters).forEach(key => columnFilters[key] = "");
       Array.from(headerRow.children).forEach(th => {
         const colName = th.getAttribute("data-column-name");
         if (colName) {
-          // Restauramos texto visible del encabezado:
-          if (colName === "KVM") {
-            th.innerHTML = "KVM-Entry";
-          } else {
-            th.innerHTML = colName;
-          }
+          th.innerHTML = (colName === "KVM") ? "KVM-Entry" : colName;
         }
       });
     }
 
-    // ============================================
-    // EVENTOS “Drag & Drop” Y CARGA DE ARCHIVO
-    // ============================================
+    // Configuración de eventos para drag & drop y clic en dropzone
     ["dragenter", "dragover"].forEach(evt => {
       dropzone.addEventListener(evt, e => {
         e.preventDefault();
@@ -641,9 +567,7 @@
     dropzone.addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
 
-    // ============================================
-    // CARGAR CSV DESDE URL (fetch + Blob)
-    // ============================================
+    // Cargar CSV desde URL mediante fetch y convertirlo a Blob
     loadUrlBtn.addEventListener("click", () => {
       const url = urlInput.value.trim();
       if (!url) {
@@ -658,9 +582,7 @@
         .catch(err => alert("Error: " + err));
     });
 
-    // ============================================
-    // TOGGLE “Mostrar filtros” / “Ocultar filtros”
-    // ============================================
+    // Toggle para mostrar u ocultar la sección de filtros
     filterToggle.addEventListener("click", () => {
       const abierto = filterOptions.style.display === "flex";
       if (abierto) {
@@ -668,49 +590,47 @@
         applyFilters();
       }
       filterOptions.style.display = abierto ? "none" : "flex";
-      toggleArrow.textContent     = abierto ? "▸" : "▾";
-      toggleText.textContent      = abierto ? "Mostrar filtros" : "Ocultar filtros";
+      toggleArrow.textContent = abierto ? "▸" : "▾";
+      toggleText.textContent = abierto ? "Mostrar filtros" : "Ocultar filtros";
     });
 
-    // ============================================
-    // MANEJO DE ARCHIVO CSV
-    // ============================================
+    /**
+     * Maneja la carga de archivos CSV (o Blob) y prepara la interfaz.
+     * @param {File|Blob} file - Archivo CSV o Blob con datos CSV.
+     * @param {string} [nameOverride] - Nombre opcional para mostrar.
+     */
     function handleFile(file, nameOverride) {
       const name = nameOverride || file.name;
       isDefault = name.includes("-default");
 
-      // 1) Ocultar “zona de carga”
-      fileLoading.style.display      = "none";
-
-      // 2) Mostrar buscador y acciones
-      searchFilter.style.display     = "flex";
+      // Ocultar zona de carga y mostrar buscador/acciones
+      fileLoading.style.display = "none";
+      searchFilter.style.display = "flex";
       actionsContainer.style.display = "flex";
+      buttonsGroup.style.display = "flex";
 
-      // ◼️ Mostrar los botones de Copiar/Exportar una vez cargado el archivo
-      buttonsGroup.style.display     = "flex";
+      // Mostrar nombre de archivo cargado y estadísticas si no es default
+      loadedName.textContent = name;
+      loadedMessage.style.display = "inline-block";
+      statsDiv.style.display = isDefault ? "none" : "block";
 
-      // 3) Rellenar “stats” y “Archivo cargado”
-      loadedName.textContent        = name;
-      loadedMessage.style.display   = "inline-block";
-      statsDiv.style.display        = isDefault ? "none" : "block";
-
-      // 4) Ocultar filtros, resetear valores y ocultar inputs en cabeceras
-      filterOptions.style.display   = "none";
-      toggleArrow.textContent       = "▸";
-      toggleText.textContent        = "Mostrar filtros";
+      // Ocultar filtros y restablecer estado
+      filterOptions.style.display = "none";
+      toggleArrow.textContent = "▸";
+      toggleText.textContent = "Mostrar filtros";
       resetRadiosAndCheckboxes();
 
-      // 5) Mostrar tabla contenedor
+      // Mostrar contenedor de tabla
       document.querySelector(".table-container").style.display = "block";
 
-      // 6) Definir cabeceras (la clave "KVM" se mostrará como "KVM-Entry")
+      // Definir cabeceras: si es default, usar columnas simplificadas
       const headers = isDefault
         ? ["Producto", "Apps", "Proxies", "Descartable", "Razón"]
         : ["App", "Developer", "APIProduct", "Proxy", "KVM", "Target"];
 
       setupHeader(headers);
 
-      // 7) Parsear con PapaParse
+      // Parsear datos con PapaParse y luego inicializar tabla
       Papa.parse(file, {
         header: true,
         delimiter: ";",
@@ -722,55 +642,53 @@
       });
     }
 
-    // ============================================
-    // CONSTRUIR ENCABEZADOS DINÁMICOS
-    // ============================================
+    /**
+     * Construye dinámicamente las cabeceras de la tabla.
+     * @param {string[]} cols - Lista de nombres de columnas.
+     */
     function setupHeader(cols) {
       headerRow.innerHTML = "";
-      cols.forEach(col => {
-        columnFilters[col] = "";
-      });
+      cols.forEach(col => columnFilters[col] = "");
       cols.forEach(c => {
         const th = document.createElement("th");
-        // Si la clave es "KVM", mostrar "KVM-Entry"
         th.textContent = (c === "KVM") ? "KVM-Entry" : c;
         headerRow.appendChild(th);
         if (!isDefault) {
-          // Al hacer clic, usamos la clave real c para filtrar (fila[c])
+          // Al hacer clic en la cabecera, activar búsqueda de columna
           th.addEventListener("click", () => activateColumnSearch(c, th));
         }
       });
     }
 
-    // ============================================
-    // INICIALIZACIÓN: ESTADÍSTICAS + EVENTOS
-    // ============================================
+    /**
+     * Inicializa estadísticas y asigna eventos adicionales.
+     */
     function init() {
       if (!isDefault) {
-        const apps  = new Set(data.map(r => r.App).filter(x => x)).size;
-        const prods = new Set(data.map(r => r.APIProduct).filter(x => x)).size;
-        const prox  = new Set(data.map(r => r.Proxy).filter(x => x)).size;
+        const appsCount = new Set(data.map(r => r.App).filter(x => x)).size;
+        const prodsCount = new Set(data.map(r => r.APIProduct).filter(x => x)).size;
+        const proxCount = new Set(data.map(r => r.Proxy).filter(x => x)).size;
         statsDiv.textContent =
-          `${apps} ${apps === 1 ? "app" : "apps"} | ` +
-          `${prods} ${prods === 1 ? "producto" : "productos"} | ` +
-          `${prox} ${prox === 1 ? "proxy" : "proxies"}`;
+          `${appsCount} ${appsCount === 1 ? "app" : "apps"} | ` +
+          `${prodsCount} ${prodsCount === 1 ? "producto" : "productos"} | ` +
+          `${proxCount} ${proxCount === 1 ? "proxy" : "proxies"}`;
       }
       attachEvents();
       applyFilters();
     }
 
-    // ============================================
-    // ASIGNAR EVENTOS
-    // ============================================
+    /**
+     * Asigna eventos a inputs, radios, checkboxes y botones de selección.
+     */
     function attachEvents() {
-      // Buscador global
+      // Buscador global: filtrar si no hay filtro de columna activo
       searchInput.addEventListener("input", () => {
         if (!isAnyColumnFilterActive()) {
           applyFilters();
         }
       });
 
-      // Radios (filtrado por producto)
+      // Radios de modo de filtrado
       filterOptions.querySelectorAll('input[name="mode"]').forEach(rb => {
         rb.addEventListener("change", () => {
           resetColumnFiltersUI();
@@ -778,83 +696,78 @@
         });
       });
 
-      // Checkboxes (filtrado por campo)
-      ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"].forEach(
-        id => {
-          document.getElementById(id).addEventListener("change", () => {
-            resetColumnFiltersUI();
-            applyFilters();
-          });
-        }
-      );
+      // Checkboxes de columna
+      ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"].forEach(id => {
+        document.getElementById(id).addEventListener("change", () => {
+          resetColumnFiltersUI();
+          applyFilters();
+        });
+      });
 
-      // Botones “Seleccionar todos” / “Deseleccionar todos”
+      // Botón "Seleccionar todos"
       document.getElementById("btnSelectAll").addEventListener("click", () => {
-        ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"].forEach(
-          id => {
-            document.getElementById(id).checked = true;
-          }
-        );
+        ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"]
+          .forEach(id => document.getElementById(id).checked = true);
         resetColumnFiltersUI();
         applyFilters();
       });
+
+      // Botón "Deseleccionar todos"
       document.getElementById("btnDeselectAll").addEventListener("click", () => {
-        ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"].forEach(
-          id => {
-            document.getElementById(id).checked = false;
-          }
-        );
+        ["chkApp","chkDev","chkProd","chkProxy","chkKVM","chkTarget"]
+          .forEach(id => document.getElementById(id).checked = false);
         resetColumnFiltersUI();
         applyFilters();
       });
     }
 
-    // ============================================
-    // ABRIR INPUT DE BÚSQUEDA EN CABECERA
-    // ============================================
+    /**
+     * Activa el input de búsqueda en la cabecera para filtrar por esa columna.
+     * @param {string} columnName - Nombre de la columna en datos.
+     * @param {HTMLElement} thElement - Elemento <th> correspondiente.
+     */
     function activateColumnSearch(columnName, thElement) {
-      // 1) Cerrar inputs en otras cabeceras
+      // Restaurar otras cabeceras que tengan input activo
       Array.from(headerRow.children).forEach(th => {
         if (th !== thElement) {
-          const almacen = th.getAttribute("data-column-name");
-          if (almacen) {
-            // Restauramos el texto visible (considerando KVM-Entry)
-            th.innerHTML = (almacen === "KVM") ? "KVM-Entry" : almacen;
+          const storedName = th.getAttribute("data-column-name");
+          if (storedName) {
+            th.innerHTML = (storedName === "KVM") ? "KVM-Entry" : storedName;
           }
         }
       });
-      // 2) Limpiar filtros de columna
-      for (const key in columnFilters) columnFilters[key] = "";
-      // 3) Borrar buscador principal
+
+      // Limpiar filtros de columna existentes y buscador global
+      Object.keys(columnFilters).forEach(key => columnFilters[key] = "");
       searchInput.value = "";
 
-      // 4) Marcar checkbox de la columna correspondiente
+      // Asegurar checkbox correspondiente marcado
       const checkboxId = columnToCheckboxId[columnName];
       if (checkboxId) {
         const cb = document.getElementById(checkboxId);
         if (cb && !cb.checked) cb.checked = true;
       }
 
-      // 5) Si ya hay input aquí, salir
+      // Si ya existe un input en esta cabecera, no crear otro
       if (thElement.querySelector("input")) return;
 
-      // 6) Crear input
+      // Crear el input de búsqueda en la cabecera
       thElement.setAttribute("data-column-name", columnName);
       thElement.innerHTML = "";
       const input = document.createElement("input");
       input.type = "text";
       input.className = "column-search-input";
-      // Placeholder igual al del filtro principal
       input.placeholder = `Buscar en ${ (columnName === "KVM") ? "KVM-Entry" : columnName }...`;
       thElement.appendChild(input);
       input.focus();
 
-      // 7) Filtrar al escribir
+      // Filtrar datos al escribir en el input
       input.addEventListener("input", () => {
         columnFilters[columnName] = input.value.toLowerCase();
         applyFilters();
       });
-      // 8) Restaurar cabecera al perder foco
+
+      // Al perder foco, restaurar texto original de la cabecera
       input.addEventListener("blur", () => {
         columnFilters[columnName] = "";
         thElement.innerHTML = (columnName === "KVM") ? "KVM-Entry" : columnName;
@@ -862,13 +775,14 @@
       });
     }
 
-    // ============================================
-    // APLICAR FILTROS
-    // ============================================
+    /**
+     * Aplica los filtros seleccionados (modo, columna, texto global) y actualiza la tabla.
+     */
     function applyFilters() {
       const mode = document.querySelector('input[name="mode"]:checked').value;
 
       if (mode === "productosHuerfanos") {
+        // Identificar productos sin proxies asociados
         const productToProxies = {};
         data.forEach(row => {
           const prod = (row.APIProduct || "").trim();
@@ -877,15 +791,15 @@
           if (!productToProxies[prod]) productToProxies[prod] = new Set();
           if (prox) productToProxies[prod].add(prox);
         });
-        const orphanProducts = new Set();
-        Object.keys(productToProxies).forEach(prod => {
-          if (productToProxies[prod].size === 0) orphanProducts.add(prod);
-        });
-        filtered = data.filter(r =>
-          orphanProducts.has((r.APIProduct || "").trim())
+        const orphanProducts = new Set(
+          Object.keys(productToProxies).filter(
+            prod => productToProxies[prod].size === 0
+          )
         );
+        filtered = data.filter(r => orphanProducts.has((r.APIProduct || "").trim()));
 
       } else if (mode === "productosDescartables") {
+        // Filtrar productos descartables (sin App y sufijo "_default")
         filtered = data.filter(r => {
           const prod = (r.APIProduct || "").trim();
           const prox = (r.Proxy || "").trim();
@@ -898,6 +812,7 @@
         });
 
       } else if (isAnyColumnFilterActive()) {
+        // Aplica filtros por columna individual
         filtered = data.filter(row => {
           for (const col in columnFilters) {
             const term = columnFilters[col];
@@ -915,6 +830,7 @@
         });
 
       } else {
+        // Filtrado global: texto y selección de columnas visibles
         let temp = data.slice();
         if (mode === "prodSinApp") {
           temp = temp.filter(r =>
@@ -943,9 +859,7 @@
         }
       }
 
-      // ---------------------------
-      // Actualizar “Resultado de búsqueda” (valores únicos)
-      // ---------------------------
+      // Actualizar contador de resultados únicos por App, Producto y Proxy
       const counts = [];
       const uniqueApps = new Set(
         filtered.map(r => (r.App || "").trim()).filter(val => val.length > 0)
@@ -971,24 +885,22 @@
           `${uniqueProxies.size} ${uniqueProxies.size === 1 ? "proxy" : "proxies"}`
         );
       }
-
-      if (counts.length > 0) {
-        resultCountDiv.textContent = `Resultado de búsqueda: ${counts.join(", ")}`;
-      } else {
-        resultCountDiv.textContent = "";
-      }
+      resultCountDiv.textContent = counts.length > 0
+        ? `Resultado de búsqueda: ${counts.join(", ")}`
+        : "";
 
       renderTable();
     }
 
-    // ============================================
-    // RENDERIZAR TABLA
-    // ============================================
+    /**
+     * Renderiza el contenido de la tabla según los datos filtrados.
+     */
     function renderTable() {
       const tbody = document.querySelector("#inventoryTable tbody");
       tbody.innerHTML = "";
 
       if (isDefault) {
+        // Modo “default”: columnas fijas Producto, Apps, Proxies, Descartable, Razón
         filtered.forEach((r, idx) => {
           const tr = document.createElement("tr");
           tr.className = idx % 2 === 0 ? "group-even" : "group-odd";
@@ -1000,46 +912,52 @@
           tbody.appendChild(tr);
         });
       } else {
+        // Agrupar por App, luego por APIProduct y Proxy, con rowSpan adecuado
         const appsUnicos = Array.from(new Set(filtered.map(r => r.App)));
         appsUnicos.forEach((app, appIdx) => {
-          const rowsPorApp    = filtered.filter(r => r.App === app);
+          const rowsPorApp = filtered.filter(r => r.App === app);
           const totalFilasApp = rowsPorApp.length;
-          const groupClass    = appIdx % 2 === 0 ? "group-even" : "group-odd";
-          let appRowStart     = true;
+          const groupClass = appIdx % 2 === 0 ? "group-even" : "group-odd";
+          let appRowRendered = false;
 
           const productos = Array.from(new Set(rowsPorApp.map(r => r.APIProduct)));
           productos.forEach(prod => {
             const rowsPorProducto = rowsPorApp.filter(r => r.APIProduct === prod);
-            const filasProducto   = rowsPorProducto.length;
+            const filasProducto = rowsPorProducto.length;
 
             rowsPorProducto.forEach((r, idxProducto) => {
               const tr = document.createElement("tr");
               tr.className = groupClass;
 
-              if (appRowStart) {
+              // Fila de App (rowSpan)
+              if (!appRowRendered) {
                 const tdApp = document.createElement("td");
-                tdApp.rowSpan    = totalFilasApp;
+                tdApp.rowSpan = totalFilasApp;
                 tdApp.textContent = r.App;
                 tr.appendChild(tdApp);
 
                 const tdDev = document.createElement("td");
-                tdDev.rowSpan    = totalFilasApp;
+                tdDev.rowSpan = totalFilasApp;
                 tdDev.textContent = r.Developer;
                 tr.appendChild(tdDev);
 
-                appRowStart = false;
+                appRowRendered = true;
               }
 
+              // Fila de APIProduct (rowSpan)
               if (idxProducto === 0) {
                 const tdProd = document.createElement("td");
-                tdProd.rowSpan    = filasProducto;
+                tdProd.rowSpan = filasProducto;
                 tdProd.textContent = r.APIProduct;
                 tr.appendChild(tdProd);
               }
 
-              const proxyActual   = r.Proxy || "";
-              const filasDeEsteProxy = rowsPorProducto.filter(x => (x.Proxy || "") === proxyActual);
-              const idxEnFilasProxy  = filasDeEsteProxy.findIndex(x =>
+              // Fila de Proxy (rowSpan)
+              const proxyActual = r.Proxy || "";
+              const filasDeEsteProxy = rowsPorProducto.filter(
+                x => (x.Proxy || "") === proxyActual
+              );
+              const idxEnFilasProxy = filasDeEsteProxy.findIndex(x =>
                 x.App === r.App &&
                 x.APIProduct === r.APIProduct &&
                 x.Proxy === r.Proxy &&
@@ -1048,12 +966,12 @@
               );
               if (idxEnFilasProxy === 0) {
                 const tdProxy = document.createElement("td");
-                tdProxy.rowSpan    = filasDeEsteProxy.length;
+                tdProxy.rowSpan = filasDeEsteProxy.length;
                 tdProxy.textContent = proxyActual;
                 tr.appendChild(tdProxy);
               }
 
-              // Mostrar KVM en su propia celda
+              // Celda KVM y Target
               const tdKVM = document.createElement("td");
               tdKVM.textContent = r.KVM || "";
               tr.appendChild(tdKVM);
@@ -1069,19 +987,19 @@
       }
     }
 
-    // ============================================
-    // COPIAR TABLA AL PORTAPAPELES
-    // ============================================
+    /**
+     * Configura el botón "Copiar tabla" para copiar HTML y texto al portapapeles.
+     */
     function copySetup() {
       const btn = document.getElementById("copyBtn");
       btn.onclick = async () => {
-        const tbl  = document.getElementById("inventoryTable");
+        const tbl = document.getElementById("inventoryTable");
         const html = tbl.outerHTML;
-        let text   = "";
+        let text = "";
         tbl.querySelectorAll("tr").forEach(row => {
           text += Array.from(row.children)
-                        .map(td => td.innerText)
-                        .join("\t") + "\n";
+                       .map(td => td.innerText)
+                       .join("\t") + "\n";
         });
         try {
           await navigator.clipboard.write([
@@ -1099,9 +1017,9 @@
       };
     }
 
-    // ============================================
-    // EXPORTAR “filtered” A CSV Y DESCARGAR
-    // ============================================
+    /**
+     * Configura el botón "Exportar a CSV" para descargar los datos filtrados.
+     */
     function exportSetup() {
       const btn = document.getElementById("exportBtn");
       btn.onclick = () => {
@@ -1109,18 +1027,16 @@
           ? ["Producto", "Apps", "Proxies", "Descartable", "Razón"]
           : ["App", "Developer", "APIProduct", "Proxy", "KVM", "Target"];
         const rows = filtered.map(r => hdr.map(c => r[c] || ""));
-        const csv  = [hdr, ...rows].map(a => a.join(";")).join("\n");
+        const csv = [hdr, ...rows].map(a => a.join(";")).join("\n");
         const blob = new Blob([csv], { type: "text/csv" });
         const link = document.createElement("a");
-        link.href     = URL.createObjectURL(blob);
+        link.href = URL.createObjectURL(blob);
         link.download = isDefault ? "productos_default.csv" : "inventario.csv";
         link.click();
       };
     }
 
-    // ============================================
-    // INICIALIZAR COPIAR Y EXPORTAR
-    // ============================================
+    // Inicializar funcionalidades de copiado y exportación
     copySetup();
     exportSetup();
   </script>
